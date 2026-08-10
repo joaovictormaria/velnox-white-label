@@ -22,13 +22,13 @@ export function Hero() {
       <div className="pointer-events-none absolute inset-0 [background:var(--gradient-ember)]" />
       <div className="pointer-events-none absolute -right-40 top-10 h-[520px] w-[520px] rounded-full bg-primary/12 blur-[140px]" />
 
-      <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 items-start gap-16 px-6 lg:grid-cols-12 lg:gap-10 lg:scale-110 lg:px-10">
+      <div className="relative mx-auto grid max-w-[1440px] 2xl:max-w-400 grid-cols-1 items-start gap-16 px-6 lg:grid-cols-12 lg:gap-10 lg:scale-110 lg:px-10">
         <div className="lg:col-span-5">
           <Pill>
             <Flame className="h-3.5 w-3.5 text-primary" /> Mais pedidos. Mais clientes. Mais resultados.
           </Pill>
 
-          <h1 className="mt-7 font-display text-[38px] font-extrabold leading-[1.05] sm:text-[48px] lg:text-[44px] xl:text-[48px]">
+          <h1 className="mt-7 font-display text-[38px] font-extrabold leading-[1.05] sm:text-[48px] lg:text-[44px] xl:text-[48px] 2xl:text-[56px]">
             Seu restaurante
             <br />
             <span className="whitespace-nowrap">

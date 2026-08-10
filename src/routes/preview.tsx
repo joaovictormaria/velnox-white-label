@@ -49,7 +49,7 @@ function Preview() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-background">
       <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
-        <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-6 py-4">
+        <div className="mx-auto flex max-w-[1200px] 2xl:max-w-340 items-center justify-between gap-4 px-6 py-4">
           <div className="flex min-w-0 items-center gap-2">
             <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gradient-accent text-sm font-bold text-primary-foreground">
               {businessName.charAt(0).toUpperCase()}
@@ -75,11 +75,11 @@ function Preview() {
       <main>
         <section className="relative overflow-hidden py-20 sm:py-28">
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(160deg,rgba(255,50,50,0.14),transparent_55%)]" />
-          <div className="relative mx-auto max-w-[1200px] px-6 text-center">
+          <div className="relative mx-auto max-w-[1200px] 2xl:max-w-340 px-6 text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-primary">
               <Sparkles className="h-3.5 w-3.5" /> {content.artDirection.style}
             </span>
-            <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-extrabold leading-[1.05] sm:text-5xl">
+            <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-extrabold leading-[1.05] sm:text-5xl 2xl:text-6xl">
               {content.headline}
             </h1>
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
@@ -111,7 +111,7 @@ function Preview() {
             className="animate-in fade-in slide-in-from-bottom-4 border-t border-border py-16 duration-700 sm:py-20"
             style={{ animationDelay: `${i * 80}ms`, animationFillMode: "backwards" }}
           >
-            <div className="mx-auto max-w-[1200px] px-6">
+            <div className="mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
               <div
                 className={
                   i % 2 === 1

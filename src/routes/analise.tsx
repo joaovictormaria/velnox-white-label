@@ -75,7 +75,7 @@ function Analise() {
           id="analise"
           className="relative mt-22 flex min-h-[calc(100vh-5.5rem)] items-center overflow-hidden pb-16 lg:pb-20"
         >
-          <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
+          <div className="mx-auto max-w-[1440px] 2xl:max-w-400 px-6 lg:px-10">
             <div className="relative isolate mx-auto max-w-xl">
               <div className="pointer-events-none absolute inset-x-6 inset-y-4 -z-10 rounded-[24px] bg-primary/60 opacity-80 blur-[90px]" />
 

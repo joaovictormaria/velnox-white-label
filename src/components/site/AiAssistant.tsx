@@ -96,7 +96,7 @@ export function AiAssistant() {
       id="assistente"
       className="relative mt-22 flex min-h-[calc(100vh-5.5rem)] scroll-mt-24 items-center overflow-hidden pb-16 lg:pb-20"
     >
-      <div className="mx-auto max-w-[1440px] px-6 lg:px-10">
+      <div className="mx-auto max-w-[1440px] 2xl:max-w-400 px-6 lg:px-10">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-[24px] font-extrabold leading-[1.1] sm:text-[30px]">
             Vamos criar seu site em menos de 30 segundos

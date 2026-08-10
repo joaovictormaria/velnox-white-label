@@ -937,7 +937,7 @@ function PizzariaPageV2() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-background">
       <header className="absolute inset-x-0 top-0 z-50 bg-transparent">
-        <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-6 py-4">
+        <div className="mx-auto flex max-w-[1200px] 2xl:max-w-340 items-center justify-between gap-4 px-6 py-4">
           <a href="#topo" className="flex items-center gap-2">
             <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-accent text-primary-foreground">
               <Flame className="h-4.5 w-4.5" />
@@ -1021,14 +1021,14 @@ function PizzariaPageV2() {
             </span>
           </div>
 
-          <div className="mx-auto w-full max-w-[1200px] px-6 pt-16 pb-10 lg:pt-24">
+          <div className="mx-auto w-full max-w-[1200px] 2xl:max-w-340 px-6 pt-16 pb-10 lg:pt-24">
             <div className="animate-in fade-in slide-in-from-bottom-4 max-w-xl duration-700">
               <Badge className="w-fit rounded-full bg-primary/15 text-primary" variant="outline">
                 Aberto agora · fecha às 23h30
               </Badge>
-              <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.05] text-white sm:text-6xl">
+              <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.05] text-white sm:text-6xl 2xl:text-7xl">
                 {businessName || "Forno & Fogo"}
-                <span className="mt-2 block text-2xl font-bold text-white/85 sm:text-3xl">
+                <span className="mt-2 block text-2xl font-bold text-white/85 sm:text-3xl 2xl:text-4xl">
                   Pizza na brasa, direto pro seu WhatsApp
                 </span>
               </h1>
@@ -1074,7 +1074,7 @@ function PizzariaPageV2() {
           </div>
 
           <div className="relative z-10 w-full py-10">
-            <div className="mx-auto grid max-w-[1200px] grid-cols-2 gap-6 px-6 sm:grid-cols-4">
+            <div className="mx-auto grid max-w-[1200px] 2xl:max-w-340 grid-cols-2 gap-6 px-6 sm:grid-cols-4">
               {stats.map((s) => (
                 <div key={s.label} className="flex flex-col items-center text-center">
                   <span
@@ -1097,7 +1097,7 @@ function PizzariaPageV2() {
           <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
 
-          <div className="relative mx-auto max-w-[1200px] px-6">
+          <div className="relative mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
             <div className="text-center">
               <Badge className="w-fit rounded-full bg-primary/10 text-primary" variant="outline">
                 Como funciona
@@ -1181,7 +1181,7 @@ function PizzariaPageV2() {
           <Pizza className="pointer-events-none absolute -right-6 top-4 hidden h-12 w-12 rotate-25 text-white/10 lg:block" />
           <BookOpen className="pointer-events-none absolute right-[45%] bottom-14 hidden h-6 w-6 -rotate-10 text-white/10 lg:block" />
 
-          <div className="relative mx-auto max-w-[1200px] px-6">
+          <div className="relative mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
             <div className="rounded-[28px] border border-white/10 bg-black/20 p-6 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.6)] backdrop-blur-sm sm:p-8">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
@@ -1235,7 +1235,7 @@ function PizzariaPageV2() {
         </section>
 
         <section id="diferenciais" className="scroll-mt-24 border-t border-border py-16 sm:py-20">
-          <div className="mx-auto max-w-[1200px] px-6">
+          <div className="mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
             <div className="text-center">
               <span className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
                 Por que a gente
@@ -1265,7 +1265,7 @@ function PizzariaPageV2() {
         <section id="delivery" className="scroll-mt-24 relative overflow-hidden border-t border-border py-16 sm:py-20">
           <div className="pointer-events-none absolute -left-32 top-1/3 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
 
-          <div className="relative mx-auto max-w-[1200px] px-6">
+          <div className="relative mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
               <div>
                 <Badge className="w-fit rounded-full bg-primary/10 text-primary" variant="outline">
@@ -1368,7 +1368,7 @@ function PizzariaPageV2() {
         </section>
 
         <section id="depoimentos" className="scroll-mt-24 border-t border-border py-16 sm:py-20">
-          <div className="mx-auto max-w-[1200px] px-6">
+          <div className="mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
             <div className="text-center">
               <span className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
                 Depoimentos
@@ -1424,7 +1424,7 @@ function PizzariaPageV2() {
       </main>
 
       <footer id="local" className="scroll-mt-24 border-t border-border bg-[#0b0b0b] py-14 text-white">
-        <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-8 px-6 sm:grid-cols-2">
+        <div className="mx-auto grid max-w-[1200px] 2xl:max-w-340 grid-cols-1 gap-8 px-6 sm:grid-cols-2">
           <div>
             <span className="flex items-center gap-2 font-display text-base font-bold">
               <Flame className="h-4 w-4 text-primary" /> Sua Logo Aqui!

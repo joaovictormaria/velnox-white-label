@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer id="contato" className="relative scroll-mt-24 border-t border-border py-16">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-primary/6 blur-3xl" />
-      <div className="relative mx-auto grid max-w-[1440px] grid-cols-1 gap-10 px-6 lg:grid-cols-12 lg:px-10">
+      <div className="relative mx-auto grid max-w-[1440px] 2xl:max-w-400 grid-cols-1 gap-10 px-6 lg:grid-cols-12 lg:px-10">
         <div className="lg:col-span-5">
           <div className="flex items-center gap-2.5">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-accent font-display text-lg font-bold text-primary-foreground">
@@ -48,7 +48,7 @@ export function Footer() {
           ))}
         </div>
       </div>
-      <div className="relative mx-auto mt-12 max-w-[1440px] border-t border-border px-6 pt-6 lg:px-10">
+      <div className="relative mx-auto mt-12 max-w-[1440px] 2xl:max-w-400 border-t border-border px-6 pt-6 lg:px-10">
         <p className="text-xs text-muted-foreground">
           © {new Date().getFullYear()} velnox.ia — Todos os direitos reservados.
         </p>

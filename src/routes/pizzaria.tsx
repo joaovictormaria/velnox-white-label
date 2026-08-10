@@ -109,7 +109,7 @@ function PizzariaPage() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-background">
       <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
-        <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-6 py-4">
+        <div className="mx-auto flex max-w-[1200px] 2xl:max-w-340 items-center justify-between gap-4 px-6 py-4">
           <a href="#inicio" className="flex min-w-0 items-center gap-2.5">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gradient-accent text-primary-foreground">
               <Flame className="h-4.5 w-4.5" />
@@ -174,11 +174,11 @@ function PizzariaPage() {
       <main>
         <section id="inicio" className="relative overflow-hidden py-20 sm:py-28">
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(160deg,rgba(255,50,50,0.14),transparent_55%)]" />
-          <div className="relative mx-auto max-w-[1200px] px-6 text-center">
+          <div className="relative mx-auto max-w-[1200px] 2xl:max-w-340 px-6 text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-primary">
               <Sparkles className="h-3.5 w-3.5" /> Forno a lenha desde 2010
             </span>
-            <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-extrabold leading-[1.05] sm:text-5xl">
+            <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-extrabold leading-[1.05] sm:text-5xl 2xl:text-6xl">
               Pizza artesanal, do jeito que a Itália ensinou
             </h1>
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
@@ -207,7 +207,7 @@ function PizzariaPage() {
         </section>
 
         <section className="border-t border-border py-12">
-          <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-6 px-6 sm:grid-cols-3">
+          <div className="mx-auto grid max-w-[1200px] 2xl:max-w-340 grid-cols-1 gap-6 px-6 sm:grid-cols-3">
             {benefits.map((b) => (
               <div
                 key={b.title}
@@ -226,7 +226,7 @@ function PizzariaPage() {
         </section>
 
         <section id="cardapio" className="border-t border-border py-16 sm:py-20">
-          <div className="mx-auto max-w-[1200px] px-6">
+          <div className="mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
             <div className="text-center">
               <span className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
                 Cardápio
@@ -268,7 +268,7 @@ function PizzariaPage() {
         </section>
 
         <section id="sobre" className="border-t border-border py-16 sm:py-20">
-          <div className="mx-auto max-w-[1200px] px-6">
+          <div className="mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2">
               <div>
                 <span className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
@@ -301,7 +301,7 @@ function PizzariaPage() {
         </section>
 
         <section id="depoimentos" className="border-t border-border py-16 sm:py-20">
-          <div className="mx-auto max-w-[1200px] px-6">
+          <div className="mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
             <div className="text-center">
               <span className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
                 Depoimentos
@@ -331,7 +331,7 @@ function PizzariaPage() {
         </section>
 
         <section id="contato" className="border-t border-border bg-primary/8 py-16 sm:py-20">
-          <div className="mx-auto max-w-[1200px] px-6">
+          <div className="mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
             <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
               <div className="text-center lg:text-left">
                 <h2 className="font-display text-2xl font-extrabold sm:text-3xl">
@@ -380,7 +380,7 @@ function PizzariaPage() {
       </main>
 
       <footer className="border-t border-border py-8">
-        <div className="mx-auto flex max-w-[1200px] flex-col items-center justify-between gap-3 px-6 text-center sm:flex-row sm:text-left">
+        <div className="mx-auto flex max-w-[1200px] 2xl:max-w-340 flex-col items-center justify-between gap-3 px-6 text-center sm:flex-row sm:text-left">
           <span className="flex items-center gap-2 text-sm font-semibold">
             <Flame className="h-4 w-4 text-primary" /> Bella Napoli Pizzaria
           </span>
