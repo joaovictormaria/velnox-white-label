@@ -41,8 +41,8 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground lg:text-lg">
-            Criamos sites modernos e otimizados que transformam visitantes em clientes fiéis. Tudo
-            simples, rápido e feito para vender.
+            Criamos sites rápidos e otimizados que transformam cada visita em pedido. Design que
+            vende, sem complicação.
           </p>
 
           <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
