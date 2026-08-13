@@ -40,6 +40,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
+import { Reveal } from "@/components/site/Reveal";
+import { Counter } from "@/components/site/Counter";
 import { stockImageUrl } from "@/lib/stock-image";
 import { cn } from "@/lib/utils";
 import pizzaHeroVideo from "@/assets/fotos de pizza/3752508-hd_1920_1080_24fps.mp4";
@@ -438,6 +440,13 @@ const menuByCategory: Record<string, MenuItem[]> = {
 
 const categories = Object.keys(menuByCategory);
 
+const featuredItems = [
+  { name: "Mussarela", price: "R$ 42,90", image: mussarelaPhoto },
+  { name: "Frango c/ Catupiry", price: "R$ 47,90", image: frangoPhoto },
+  { name: "Pepperoni Duplo", price: "R$ 56,90", image: pepperoniPhoto },
+  { name: "Quatro Queijos", price: "R$ 55,90", image: quatroQueijosPhoto },
+];
+
 function parseCurrency(value: string): number {
   return Number(value.replace(/[^\d,]/g, "").replace(",", "."));
 }
@@ -513,12 +522,23 @@ const WAVE_TILE = 120;
 const WAVE_WIDTH = WAVE_TILE * 2;
 const wavePath = buildWavePath(WAVE_WIDTH, 40, 11, WAVE_BASELINE);
 
-const stats = [
-  { icon: Award, value: "15 anos", label: "de tradição" },
-  { icon: Users, value: "12 mil+", label: "clientes atendidos" },
+const stats: {
+  icon: typeof Award;
+  label: string;
+  value?: string;
+  to?: number;
+  suffix?: string;
+}[] = [
+  { icon: Award, to: 15, suffix: " anos", label: "de tradição" },
+  { icon: Users, to: 12, suffix: " mil+", label: "clientes atendidos" },
   { icon: Star, value: "4.9/5", label: "avaliação média" },
-  { icon: Clock, value: "35 min", label: "tempo médio de entrega" },
+  { icon: Clock, to: 35, suffix: " min", label: "tempo médio de entrega" },
 ];
+
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]?.[0] ?? "") + (parts[parts.length - 1]?.[0] ?? "")).toUpperCase();
+}
 
 const testimonials = [
   {
@@ -742,7 +762,7 @@ function FullMenuDialog({
           size="lg"
           className="mx-auto flex rounded-full bg-[#F5B400] text-black hover:brightness-105"
         >
-          <BookOpen className="h-4 w-4" /> Ver cardápio
+          <BookOpen className="h-4 w-4" /> Ver cardápio completo
         </Button>
       </DialogTrigger>
       <DialogContent className="h-[85vh] max-w-4xl overflow-hidden border-white/10 bg-[#171008] p-0 text-white sm:rounded-3xl">
@@ -1010,6 +1030,7 @@ function PizzariaPageV2() {
             style={{ transform: `translate3d(0, ${heroOffset}px, 0) scale(1.15)` }}
           />
           <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,0,0,0.45)_0%,rgba(0,0,0,0.25)_45%,rgba(0,0,0,0.6)_100%)]" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-64 bg-linear-to-t from-black via-black/75 to-transparent" />
 
           <div className="animate-in fade-in slide-in-from-bottom-4 absolute right-6 top-24 hidden items-center gap-3 rounded-2xl border border-white/10 bg-[#0b0b0b]/85 px-4 py-3 shadow-glow backdrop-blur duration-700 sm:flex lg:top-28">
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary">
@@ -1073,10 +1094,10 @@ function PizzariaPageV2() {
             </div>
           </div>
 
-          <div className="relative z-10 w-full py-10">
+          <div className="relative z-10 w-full pt-10 pb-20 sm:pb-10">
             <div className="mx-auto grid max-w-[1200px] 2xl:max-w-340 grid-cols-2 gap-6 px-6 sm:grid-cols-4">
-              {stats.map((s) => (
-                <div key={s.label} className="flex flex-col items-center text-center">
+              {stats.map((s, i) => (
+                <Reveal key={s.label} variant="up" delay={i * 100} className="flex flex-col items-center text-center">
                   <span
                     tabIndex={0}
                     className="grid h-10 w-10 cursor-default place-items-center rounded-full bg-primary/15 text-primary transition-colors duration-300 hover:bg-primary hover:text-primary-foreground focus-visible:bg-primary focus-visible:text-primary-foreground focus-visible:outline-none"
@@ -1084,10 +1105,10 @@ function PizzariaPageV2() {
                     <s.icon className="h-4.5 w-4.5" />
                   </span>
                   <span className="mt-3 font-display text-lg font-extrabold text-white sm:text-xl">
-                    {s.value}
+                    {s.value ?? <Counter to={s.to!} suffix={s.suffix} />}
                   </span>
                   <span className="text-xs text-white/60">{s.label}</span>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -1098,7 +1119,7 @@ function PizzariaPageV2() {
           <div className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
 
           <div className="relative mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
-            <div className="text-center">
+            <Reveal variant="up" className="text-center">
               <Badge className="w-fit rounded-full bg-primary/10 text-primary" variant="outline">
                 Como funciona
               </Badge>
@@ -1108,9 +1129,13 @@ function PizzariaPageV2() {
               <p className="mx-auto mt-3 max-w-sm text-sm text-neutral-500">
                 Um fluxo direto, sem fricção: cada passo já prepara o próximo.
               </p>
-            </div>
+            </Reveal>
 
-            <div className="mt-12 rounded-[32px] border border-neutral-200/80 bg-white/70 p-8 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.25)] backdrop-blur-sm sm:p-12">
+            <Reveal
+              variant="scale"
+              delay={120}
+              className="mt-12 rounded-[32px] border border-neutral-200/80 bg-white/70 p-8 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.25)] backdrop-blur-sm sm:p-12"
+            >
               <div className="relative grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-6">
                 <div className="pointer-events-none absolute inset-x-0 top-7 hidden sm:block">
                   <div className="mx-[16.5%] h-8 -translate-y-1/2 overflow-hidden">
@@ -1160,7 +1185,7 @@ function PizzariaPageV2() {
                   </div>
                 ))}
               </div>
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -1182,7 +1207,7 @@ function PizzariaPageV2() {
           <BookOpen className="pointer-events-none absolute right-[45%] bottom-14 hidden h-6 w-6 -rotate-10 text-white/10 lg:block" />
 
           <div className="relative mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
-            <div className="rounded-[28px] border border-white/10 bg-black/20 p-6 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.6)] backdrop-blur-sm sm:p-8">
+            <Reveal variant="scale" className="rounded-[28px] border border-white/10 bg-black/20 p-6 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.6)] backdrop-blur-sm sm:p-8">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/20 bg-black/25 text-white shadow-glow">
@@ -1226,29 +1251,57 @@ function PizzariaPageV2() {
                   </a>
                 </div>
 
+                <div className="mt-8 grid grid-cols-2 gap-4 text-left sm:grid-cols-4">
+                  {featuredItems.map((item) => (
+                    <button
+                      key={item.name}
+                      type="button"
+                      onClick={() => setMenuDialogOpen(true)}
+                      className="group overflow-hidden rounded-2xl border border-white/10 bg-black/20 text-left transition-colors hover:border-[#F5B400]/50"
+                    >
+                      <div className="aspect-square w-full overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </div>
+                      <div className="p-3">
+                        <p className="truncate text-xs font-semibold text-white sm:text-sm">
+                          {item.name}
+                        </p>
+                        <p className="mt-0.5 text-xs font-bold text-[#F5B400]">{item.price}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
                 <div className="mt-8 flex justify-center">
                   <FullMenuDialog open={menuDialogOpen} onOpenChange={setMenuDialogOpen} />
                 </div>
               </div>
-            </div>
+            </Reveal>
           </div>
         </section>
 
         <section id="diferenciais" className="scroll-mt-24 border-t border-border py-16 sm:py-20">
           <div className="mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
-            <div className="text-center">
+            <Reveal variant="up" className="text-center">
               <span className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
                 Por que a gente
               </span>
               <h2 className="mt-3 font-display text-2xl font-extrabold sm:text-3xl">
                 Diferenciais da casa
               </h2>
-            </div>
+            </Reveal>
 
             <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {differentiators.map((item) => (
-                <div
+              {differentiators.map((item, i) => (
+                <Reveal
                   key={item.title}
+                  variant="up"
+                  delay={i * 80}
                   className="group relative overflow-hidden rounded-[24px] border border-border bg-card/60 p-6 text-center transition-transform duration-300 hover:-translate-y-1"
                 >
                   <span className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-primary/10 text-primary">
@@ -1256,7 +1309,7 @@ function PizzariaPageV2() {
                   </span>
                   <h3 className="mt-4 font-display text-base font-bold">{item.title}</h3>
                   <p className="mt-1.5 text-sm text-muted-foreground">{item.desc}</p>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -1267,7 +1320,7 @@ function PizzariaPageV2() {
 
           <div className="relative mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-              <div>
+              <Reveal variant="left">
                 <Badge className="w-fit rounded-full bg-primary/10 text-primary" variant="outline">
                   Delivery
                 </Badge>
@@ -1334,14 +1387,14 @@ function PizzariaPageV2() {
                     4.9 · +12 mil entregas
                   </span>
                 </div>
-              </div>
+              </Reveal>
 
-              <div className="relative">
+              <Reveal variant="right" delay={120} className="relative">
                 <div className="pointer-events-none absolute -inset-4 -z-10 rounded-[36px] bg-primary/15 blur-2xl" />
                 <div className="relative overflow-hidden rounded-[28px] border border-border shadow-soft">
                   <img
-                    src={stockImageUrl("pizza delivery box", 700, 800)}
-                    alt="Entrega de pizza"
+                    src={pepperoniPhoto}
+                    alt="Pizza pronta para entrega"
                     loading="lazy"
                     className="aspect-4/5 w-full object-cover"
                   />
@@ -1362,36 +1415,45 @@ function PizzariaPageV2() {
                   <ShieldCheck className="h-4 w-4 text-primary" />
                   <span className="text-xs font-bold text-white">Frete grátis R$ 80+</span>
                 </div>
-              </div>
+              </Reveal>
             </div>
           </div>
         </section>
 
         <section id="depoimentos" className="scroll-mt-24 border-t border-border py-16 sm:py-20">
           <div className="mx-auto max-w-[1200px] 2xl:max-w-340 px-6">
-            <div className="text-center">
+            <Reveal variant="up" className="text-center">
               <span className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
                 Depoimentos
               </span>
               <h2 className="mt-3 font-display text-2xl font-extrabold sm:text-3xl">
                 Quem pediu, volta a pedir
               </h2>
-            </div>
+            </Reveal>
             <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-3">
-              {testimonials.map((t) => (
-                <div
+              {testimonials.map((t, i) => (
+                <Reveal
                   key={t.name}
+                  variant="scale"
+                  delay={i * 100}
                   className="relative rounded-2xl border border-border bg-card/60 p-6"
                 >
                   <Quote className="h-5 w-5 text-primary/40" />
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t.text}</p>
-                  <div className="mt-5 flex items-center gap-1 text-primary">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-current" />
-                    ))}
+                  <div className="mt-5 flex items-center gap-3 border-t border-border pt-4">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/15 text-[11px] font-semibold text-primary">
+                      {initials(t.name)}
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold">{t.name}</p>
+                      <div className="mt-0.5 flex items-center gap-0.5 text-primary">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} className="h-3 w-3 fill-current" />
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <p className="mt-2 text-sm font-semibold">{t.name}</p>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -1399,14 +1461,14 @@ function PizzariaPageV2() {
 
         <section className="border-t border-border py-16 sm:py-20">
           <div className="mx-auto max-w-[700px] px-6">
-            <div className="text-center">
+            <Reveal variant="up" className="text-center">
               <span className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
                 Dúvidas
               </span>
               <h2 className="mt-3 font-display text-2xl font-extrabold sm:text-3xl">
                 Perguntas frequentes
               </h2>
-            </div>
+            </Reveal>
             <Accordion type="single" collapsible className="mt-8">
               {faq.map((item, i) => (
                 <AccordionItem key={item.q} value={`item-${i}`}>
@@ -1425,7 +1487,7 @@ function PizzariaPageV2() {
 
       <footer id="local" className="scroll-mt-24 border-t border-border bg-[#0b0b0b] py-14 text-white">
         <div className="mx-auto grid max-w-[1200px] 2xl:max-w-340 grid-cols-1 gap-8 px-6 sm:grid-cols-2">
-          <div>
+          <Reveal variant="left">
             <span className="flex items-center gap-2 font-display text-base font-bold">
               <Flame className="h-4 w-4 text-primary" /> Sua Logo Aqui!
             </span>
@@ -1434,8 +1496,8 @@ function PizzariaPageV2() {
               Av. das Palmeiras, 812 — Jardim das Flores
             </p>
             <p className="mt-2 text-sm text-white/60">Ter a Dom, 18h às 23h30</p>
-          </div>
-          <div className="sm:text-right">
+          </Reveal>
+          <Reveal variant="right" delay={100} className="sm:text-right">
             <Button variant="hero" size="lg" className="rounded-full" asChild>
               <a
                 href="https://wa.me/5511999999999"
@@ -1449,7 +1511,7 @@ function PizzariaPageV2() {
               © {new Date().getFullYear()} {businessName || "Forno&Fogo Pizzaria"}. Todos os
               direitos reservados.
             </p>
-          </div>
+          </Reveal>
         </div>
       </footer>
 

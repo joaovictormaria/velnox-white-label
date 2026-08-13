@@ -29,7 +29,7 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
+        "animate-in fade-in slide-in-from-top-4 animation-duration-[600ms] fixed inset-x-0 top-0 z-50 transition-all duration-500",
         scrolled ? "glass border-b" : "border-b border-transparent bg-transparent",
       )}
     >
@@ -74,7 +74,7 @@ export function Navbar() {
       </div>
 
       {open && (
-        <nav className="glass border-t px-6 pb-6 pt-2 lg:hidden">
+        <nav className="animate-in fade-in slide-in-from-top-2 glass border-t px-6 pb-6 pt-2 duration-200 lg:hidden">
           <ul className="flex flex-col">
             {links.map((l) => (
               <li key={l.href}>

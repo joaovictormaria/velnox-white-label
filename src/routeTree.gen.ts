@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnaliseRouteImport } from './routes/analise'
 import { Route as CriarSiteRouteImport } from './routes/criar-site'
-import { Route as PizzariaRouteImport } from './routes/pizzaria'
 import { Route as Pizzaria2RouteImport } from './routes/pizzaria-2'
 import { Route as PreviewRouteImport } from './routes/preview'
 
@@ -31,11 +30,6 @@ const CriarSiteRoute = CriarSiteRouteImport.update({
   path: '/criar-site',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PizzariaRoute = PizzariaRouteImport.update({
-  id: '/pizzaria',
-  path: '/pizzaria',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const Pizzaria2Route = Pizzaria2RouteImport.update({
   id: '/pizzaria-2',
   path: '/pizzaria-2',
@@ -51,7 +45,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analise': typeof AnaliseRoute
   '/criar-site': typeof CriarSiteRoute
-  '/pizzaria': typeof PizzariaRoute
   '/pizzaria-2': typeof Pizzaria2Route
   '/preview': typeof PreviewRoute
 }
@@ -59,7 +52,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analise': typeof AnaliseRoute
   '/criar-site': typeof CriarSiteRoute
-  '/pizzaria': typeof PizzariaRoute
   '/pizzaria-2': typeof Pizzaria2Route
   '/preview': typeof PreviewRoute
 }
@@ -68,32 +60,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analise': typeof AnaliseRoute
   '/criar-site': typeof CriarSiteRoute
-  '/pizzaria': typeof PizzariaRoute
   '/pizzaria-2': typeof Pizzaria2Route
   '/preview': typeof PreviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    '/' | '/analise' | '/criar-site' | '/pizzaria' | '/pizzaria-2' | '/preview'
+  fullPaths: '/' | '/analise' | '/criar-site' | '/pizzaria-2' | '/preview'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    '/' | '/analise' | '/criar-site' | '/pizzaria' | '/pizzaria-2' | '/preview'
-  id:
-    | '__root__'
-    | '/'
-    | '/analise'
-    | '/criar-site'
-    | '/pizzaria'
-    | '/pizzaria-2'
-    | '/preview'
+  to: '/' | '/analise' | '/criar-site' | '/pizzaria-2' | '/preview'
+  id: '__root__' | '/' | '/analise' | '/criar-site' | '/pizzaria-2' | '/preview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnaliseRoute: typeof AnaliseRoute
   CriarSiteRoute: typeof CriarSiteRoute
-  PizzariaRoute: typeof PizzariaRoute
   Pizzaria2Route: typeof Pizzaria2Route
   PreviewRoute: typeof PreviewRoute
 }
@@ -121,13 +102,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CriarSiteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pizzaria': {
-      id: '/pizzaria'
-      path: '/pizzaria'
-      fullPath: '/pizzaria'
-      preLoaderRoute: typeof PizzariaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/pizzaria-2': {
       id: '/pizzaria-2'
       path: '/pizzaria-2'
@@ -149,7 +123,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnaliseRoute: AnaliseRoute,
   CriarSiteRoute: CriarSiteRoute,
-  PizzariaRoute: PizzariaRoute,
   Pizzaria2Route: Pizzaria2Route,
   PreviewRoute: PreviewRoute,
 }

@@ -1,12 +1,13 @@
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/site/Reveal";
 
 export function Footer() {
   return (
     <footer id="contato" className="relative scroll-mt-24 border-t border-border py-16">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-primary/6 blur-3xl" />
       <div className="relative mx-auto grid max-w-[1440px] 2xl:max-w-400 grid-cols-1 gap-10 px-6 lg:grid-cols-12 lg:px-10">
-        <div className="lg:col-span-5">
+        <Reveal variant="left" className="lg:col-span-5">
           <div className="flex items-center gap-2.5">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-accent font-display text-lg font-bold text-primary-foreground">
               V
@@ -22,15 +23,15 @@ export function Footer() {
           <Button variant="hero" size="pill" className="mt-6">
             <MessageCircle /> Falar no WhatsApp
           </Button>
-        </div>
+        </Reveal>
 
         <div className="grid grid-cols-2 gap-8 lg:col-span-7 lg:grid-cols-3">
           {[
             { title: "Produto", items: ["Soluções", "Como funciona", "Exemplos", "Planos"] },
             { title: "Empresa", items: ["Sobre", "Depoimentos", "Blog", "Contato"] },
             { title: "Suporte", items: ["FAQ", "Central de ajuda", "Privacidade", "Termos"] },
-          ].map((col) => (
-            <div key={col.title}>
+          ].map((col, ci) => (
+            <Reveal key={col.title} variant="up" delay={ci * 100}>
               <p className="text-sm font-semibold">{col.title}</p>
               <ul className="mt-4 space-y-3">
                 {col.items.map((i) => (
@@ -44,7 +45,7 @@ export function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>
