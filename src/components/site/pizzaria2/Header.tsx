@@ -3,15 +3,12 @@ import { Link } from "@tanstack/react-router";
 import { Menu as MenuIcon, Pizza, ShoppingCart, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/pizzaria2/cart";
-
-const navItems = [
-  { label: "Início", to: "/pizzaria-2" as const },
-  { label: "Cardápio", to: "/pizzaria-2/cardapio" as const },
-];
+import { useGoToCardapio } from "@/lib/pizzaria2/go-to-cardapio";
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const { itemCount } = useCart();
+  const goToCardapio = useGoToCardapio();
 
   return (
     <header className="sticky top-0 z-50 border-b border-charcoal/8 bg-mozzarella/95 backdrop-blur">
@@ -24,17 +21,21 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              activeOptions={{ exact: item.to === "/pizzaria-2" }}
-              className="text-sm font-medium text-charcoal/70 transition-colors hover:text-charcoal"
-              activeProps={{ className: "!text-tomato" }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          <Link
+            to="/pizzaria-2"
+            activeOptions={{ exact: true }}
+            className="text-sm font-medium text-charcoal/70 transition-colors hover:text-charcoal"
+            activeProps={{ className: "!text-tomato" }}
+          >
+            Início
+          </Link>
+          <a
+            href="/pizzaria-2#cardapio"
+            onClick={goToCardapio}
+            className="text-sm font-medium text-charcoal/70 transition-colors hover:text-charcoal"
+          >
+            Cardápio
+          </a>
           <span className="cursor-default text-sm font-medium text-charcoal/40">
             Acompanhar pedido
           </span>
@@ -76,21 +77,29 @@ export function Header() {
       {open && (
         <nav className="border-t border-charcoal/8 bg-mozzarella px-4 pb-4 pt-2 sm:px-6 md:hidden">
           <ul className="flex flex-col">
-            {navItems.map((item) => (
-              <li key={item.to}>
-                <Link
-                  to={item.to}
-                  activeOptions={{ exact: item.to === "/pizzaria-2" }}
-                  onClick={() => setOpen(false)}
-                  className={cn(
-                    "block border-b border-charcoal/8 py-3 text-sm font-medium text-charcoal/70",
-                  )}
-                  activeProps={{ className: "!text-tomato" }}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+            <li>
+              <Link
+                to="/pizzaria-2"
+                activeOptions={{ exact: true }}
+                onClick={() => setOpen(false)}
+                className={cn("block border-b border-charcoal/8 py-3 text-sm font-medium text-charcoal/70")}
+                activeProps={{ className: "!text-tomato" }}
+              >
+                Início
+              </Link>
+            </li>
+            <li>
+              <a
+                href="/pizzaria-2#cardapio"
+                onClick={(e) => {
+                  setOpen(false);
+                  goToCardapio(e);
+                }}
+                className="block border-b border-charcoal/8 py-3 text-sm font-medium text-charcoal/70"
+              >
+                Cardápio
+              </a>
+            </li>
             <li className="border-b border-charcoal/8 py-3 text-sm font-medium text-charcoal/40">
               Acompanhar pedido
             </li>

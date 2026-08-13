@@ -1,9 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Clock, Flame, Leaf, MapPin, Truck, Wheat } from "lucide-react";
+import type { ComponentType } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { Circle, Flame, Leaf, MapPin, Truck, Wheat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/site/Reveal";
 import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
 import { CategorySaboresSection } from "@/components/site/pizzaria2/CategorySaboresSection";
+import { useGoToCardapio } from "@/lib/pizzaria2/go-to-cardapio";
+import { cn } from "@/lib/utils";
 import heroPizzaPhoto from "@/assets/fotos de pizza/pizza-hero.jpg";
 
 const title = "Bella Pizza — A pizza que você estava procurando";
@@ -23,28 +26,44 @@ export const Route = createFileRoute("/pizzaria-2/")({
 });
 
 const whatsappHref = "https://wa.me/5511999999999";
+const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  "Av. das Palmeiras, 812 - Jardim das Flores",
+)}`;
 
 const infoBlocks: {
-  icon: typeof Truck | null;
-  dot?: boolean;
+  icon: ComponentType<{ className?: string }>;
+  tone: "olive" | "tomato";
   title: string;
-  detail: string;
+  detail: string[];
+  badge?: string;
+  action?: { label: string; href: string };
 }[] = [
   {
-    icon: null,
-    dot: true,
+    icon: Circle,
+    tone: "olive",
     title: "Aberto agora",
-    detail: "Fecha às 23:30",
+    detail: ["Fecha às 23:30"],
+    badge: "Aberto",
   },
   {
     icon: Truck,
+    tone: "tomato",
     title: "Entrega em até 40 min",
-    detail: "Taxa a partir de R$ 6,00",
+    detail: ["Taxa a partir de R$ 6,00"],
   },
   {
     icon: MapPin,
+    tone: "tomato",
     title: "Endereço",
-    detail: "Av. das Palmeiras, 812 — Jardim das Flores",
+    detail: ["Av. das Palmeiras, 812 —", "Jardim das Flores"],
+    action: { label: "Ver no mapa →", href: mapsHref },
+  },
+  {
+    icon: WhatsAppIcon,
+    tone: "tomato",
+    title: "Dúvidas ou pedidos?",
+    detail: ["Fale com a gente"],
+    action: { label: "Chamar no WhatsApp →", href: whatsappHref },
   },
 ];
 
@@ -56,6 +75,8 @@ const careItems = [
 ];
 
 function PizzariaInicio() {
+  const goToCardapio = useGoToCardapio();
+
   return (
     <main>
       <section className="relative flex flex-col overflow-hidden min-h-[calc(100vh-61px)] min-h-[calc(100dvh-61px)]">
@@ -63,7 +84,10 @@ function PizzariaInicio() {
             so the info card below can never climb up and overlap it. */}
         <div className="flex flex-1 flex-col md:grid md:grid-cols-2 md:grid-rows-[1fr]">
           {/* Text panel — off-white background, own column, never overlapped by the photo. */}
-          <div className="relative z-10 order-2 flex items-start bg-mozzarella px-4 pt-10 pb-8 sm:px-6 sm:pt-12 md:order-1 md:px-10 md:pt-20 lg:px-16 lg:pt-24">
+          {/* Left padding mirrors the header's max-w-[1200px] container so the
+              headline/button align with the logo at any viewport width, not
+              just at the breakpoints a fixed px-* scale would hit. */}
+          <div className="relative z-10 order-2 flex items-start bg-mozzarella px-4 pt-10 pb-8 sm:px-[max(1.5rem,calc((100vw-1200px)/2+1.5rem))] sm:pt-12 md:order-1 md:pt-20 lg:pt-24">
             <Reveal variant="up" className="max-w-xl">
               <h1 className="font-display text-4xl font-extrabold leading-[1.1] sm:text-5xl">
                 <span className="text-charcoal">A pizza que você estava</span>{" "}
@@ -77,10 +101,10 @@ function PizzariaInicio() {
                 <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-tomato/50" />
                 <Button
                   size="xl"
+                  onClick={goToCardapio}
                   className="rounded-full bg-tomato px-10 text-lg font-semibold text-mozzarella shadow-none hover:bg-tomato/90"
-                  asChild
                 >
-                  <Link to="/pizzaria-2/cardapio">Ver cardápio →</Link>
+                  Ver cardápio →
                 </Button>
               </div>
             </Reveal>
@@ -107,45 +131,53 @@ function PizzariaInicio() {
             className="mx-auto grid max-w-[1200px] grid-cols-1 divide-y divide-charcoal/8 overflow-hidden rounded-[28px] border border-charcoal/8 bg-mozzarella shadow-[0_20px_50px_-35px_rgba(23,23,23,0.4)] sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4"
           >
             {infoBlocks.map((block) => (
-              <div key={block.title} className="flex flex-col gap-1.5 p-6">
-                <div className="flex items-center gap-2">
-                  {block.dot ? (
-                    <span className="relative flex h-2.5 w-2.5">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-olive/60" />
-                      <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-olive" />
-                    </span>
-                  ) : (
-                    block.icon && <block.icon className="h-4 w-4 text-tomato" />
-                  )}
-                  <span className="text-sm font-bold text-charcoal">{block.title}</span>
+              <div key={block.title} className="flex flex-col gap-3 p-6 sm:p-7">
+                <div className="flex items-center gap-3">
+                  <span
+                    className={cn(
+                      "grid h-11 w-11 shrink-0 place-items-center rounded-full",
+                      block.tone === "olive" ? "bg-olive/10 text-olive" : "bg-tomato/10 text-tomato",
+                    )}
+                  >
+                    <block.icon className="h-5 w-5" />
+                  </span>
+                  <span className="font-display text-sm font-bold text-charcoal">
+                    {block.title}
+                  </span>
                 </div>
-                <p className="text-xs leading-relaxed text-charcoal/55">{block.detail}</p>
+
+                <div className="flex-1">
+                  {block.detail.map((line) => (
+                    <p key={line} className="text-xs leading-relaxed text-charcoal/55">
+                      {line}
+                    </p>
+                  ))}
+                </div>
+
+                {block.badge && (
+                  <span className="inline-flex w-fit items-center rounded-full bg-olive/10 px-2.5 py-1 text-[11px] font-semibold text-olive">
+                    {block.badge}
+                  </span>
+                )}
+
+                {block.action && (
+                  <a
+                    href={block.action.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-fit items-center text-xs font-semibold text-tomato hover:underline"
+                  >
+                    {block.action.label}
+                  </a>
+                )}
               </div>
             ))}
-
-            <div className="flex flex-col gap-1.5 p-6">
-              <div className="flex items-center gap-2">
-                <WhatsAppIcon className="h-4 w-4 text-tomato" />
-                <span className="text-sm font-bold text-charcoal">Dúvidas ou pedidos?</span>
-              </div>
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex w-fit items-center gap-1.5 text-xs font-semibold text-tomato hover:underline"
-              >
-                <WhatsAppIcon className="h-3.5 w-3.5" /> Chamar no WhatsApp
-              </a>
-            </div>
           </Reveal>
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 sm:py-20">
-        <CategorySaboresSection
-          categorySlug="tradicionais"
-          cta={{ label: "Ver cardápio completo →", to: "/pizzaria-2/cardapio" }}
-        />
+      <section id="cardapio" className="scroll-mt-20 mx-auto max-w-[1200px] px-4 py-16 sm:px-6 sm:py-20">
+        <CategorySaboresSection defaultCategorySlug="tradicionais" />
       </section>
 
       <section className="relative overflow-hidden py-16 sm:py-24">

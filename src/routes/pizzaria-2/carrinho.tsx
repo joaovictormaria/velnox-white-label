@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CartItemRow } from "@/components/site/pizzaria2/CartItemRow";
 import { MenuThumb } from "@/components/site/pizzaria2/MenuThumb";
 import { PriceTag } from "@/components/site/pizzaria2/PriceTag";
 import { useCart } from "@/lib/pizzaria2/cart";
+import { useGoToCardapio } from "@/lib/pizzaria2/go-to-cardapio";
 import { formatCurrency, productBySlug, suggestedDrinkSlugs } from "@/lib/pizzaria2/menu";
 
 export const Route = createFileRoute("/pizzaria-2/carrinho")({
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/pizzaria-2/carrinho")({
 
 function PizzariaCarrinho() {
   const { lines, addLine, removeLine, clearCart, subtotal, deliveryFee, total } = useCart();
+  const goToCardapio = useGoToCardapio();
 
   const suggestedDrinks = suggestedDrinkSlugs
     .map((slug) => productBySlug(slug))
@@ -50,10 +52,10 @@ function PizzariaCarrinho() {
         <div className="mt-10 rounded-3xl border border-dashed border-charcoal/15 py-16 text-center">
           <p className="text-sm text-charcoal/55">Seu carrinho está vazio.</p>
           <Button
-            asChild
+            onClick={goToCardapio}
             className="mt-5 rounded-full bg-tomato text-mozzarella shadow-none hover:bg-tomato/90"
           >
-            <Link to="/pizzaria-2/cardapio">Ver cardápio</Link>
+            Ver cardápio
           </Button>
         </div>
       ) : (
@@ -127,10 +129,10 @@ function PizzariaCarrinho() {
         <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
           <Button
             variant="outline"
-            asChild
+            onClick={goToCardapio}
             className="rounded-full border-charcoal/20 bg-mozzarella text-charcoal hover:bg-charcoal/5"
           >
-            <Link to="/pizzaria-2/cardapio">← Continuar comprando</Link>
+            ← Continuar comprando
           </Button>
           <Button
             asChild

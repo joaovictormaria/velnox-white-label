@@ -16,8 +16,6 @@ import { Route as Pizzaria2RouteRouteImport } from './routes/pizzaria-2/route'
 import { Route as PreviewRouteImport } from './routes/preview'
 import { Route as Pizzaria2IndexRouteImport } from './routes/pizzaria-2/index'
 import { Route as Pizzaria2CarrinhoRouteImport } from './routes/pizzaria-2/carrinho'
-import { Route as Pizzaria2CardapioIndexRouteImport } from './routes/pizzaria-2/cardapio/index'
-import { Route as Pizzaria2CardapioCategoriaRouteImport } from './routes/pizzaria-2/cardapio/$categoria'
 import { Route as Pizzaria2ProdutoSlugRouteImport } from './routes/pizzaria-2/produto/$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -55,17 +53,6 @@ const Pizzaria2CarrinhoRoute = Pizzaria2CarrinhoRouteImport.update({
   path: '/carrinho',
   getParentRoute: () => Pizzaria2RouteRoute,
 } as any)
-const Pizzaria2CardapioIndexRoute = Pizzaria2CardapioIndexRouteImport.update({
-  id: '/cardapio/',
-  path: '/cardapio/',
-  getParentRoute: () => Pizzaria2RouteRoute,
-} as any)
-const Pizzaria2CardapioCategoriaRoute =
-  Pizzaria2CardapioCategoriaRouteImport.update({
-    id: '/cardapio/$categoria',
-    path: '/cardapio/$categoria',
-    getParentRoute: () => Pizzaria2RouteRoute,
-  } as any)
 const Pizzaria2ProdutoSlugRoute = Pizzaria2ProdutoSlugRouteImport.update({
   id: '/produto/$slug',
   path: '/produto/$slug',
@@ -80,9 +67,7 @@ export interface FileRoutesByFullPath {
   '/preview': typeof PreviewRoute
   '/pizzaria-2/carrinho': typeof Pizzaria2CarrinhoRoute
   '/pizzaria-2/': typeof Pizzaria2IndexRoute
-  '/pizzaria-2/cardapio/$categoria': typeof Pizzaria2CardapioCategoriaRoute
   '/pizzaria-2/produto/$slug': typeof Pizzaria2ProdutoSlugRoute
-  '/pizzaria-2/cardapio/': typeof Pizzaria2CardapioIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -91,9 +76,7 @@ export interface FileRoutesByTo {
   '/preview': typeof PreviewRoute
   '/pizzaria-2/carrinho': typeof Pizzaria2CarrinhoRoute
   '/pizzaria-2': typeof Pizzaria2IndexRoute
-  '/pizzaria-2/cardapio/$categoria': typeof Pizzaria2CardapioCategoriaRoute
   '/pizzaria-2/produto/$slug': typeof Pizzaria2ProdutoSlugRoute
-  '/pizzaria-2/cardapio': typeof Pizzaria2CardapioIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,9 +87,7 @@ export interface FileRoutesById {
   '/preview': typeof PreviewRoute
   '/pizzaria-2/carrinho': typeof Pizzaria2CarrinhoRoute
   '/pizzaria-2/': typeof Pizzaria2IndexRoute
-  '/pizzaria-2/cardapio/$categoria': typeof Pizzaria2CardapioCategoriaRoute
   '/pizzaria-2/produto/$slug': typeof Pizzaria2ProdutoSlugRoute
-  '/pizzaria-2/cardapio/': typeof Pizzaria2CardapioIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -118,9 +99,7 @@ export interface FileRouteTypes {
     | '/preview'
     | '/pizzaria-2/carrinho'
     | '/pizzaria-2/'
-    | '/pizzaria-2/cardapio/$categoria'
     | '/pizzaria-2/produto/$slug'
-    | '/pizzaria-2/cardapio/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -129,9 +108,7 @@ export interface FileRouteTypes {
     | '/preview'
     | '/pizzaria-2/carrinho'
     | '/pizzaria-2'
-    | '/pizzaria-2/cardapio/$categoria'
     | '/pizzaria-2/produto/$slug'
-    | '/pizzaria-2/cardapio'
   id:
     | '__root__'
     | '/'
@@ -141,9 +118,7 @@ export interface FileRouteTypes {
     | '/preview'
     | '/pizzaria-2/carrinho'
     | '/pizzaria-2/'
-    | '/pizzaria-2/cardapio/$categoria'
     | '/pizzaria-2/produto/$slug'
-    | '/pizzaria-2/cardapio/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -205,20 +180,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Pizzaria2CarrinhoRouteImport
       parentRoute: typeof Pizzaria2RouteRoute
     }
-    '/pizzaria-2/cardapio/': {
-      id: '/pizzaria-2/cardapio/'
-      path: '/cardapio'
-      fullPath: '/pizzaria-2/cardapio/'
-      preLoaderRoute: typeof Pizzaria2CardapioIndexRouteImport
-      parentRoute: typeof Pizzaria2RouteRoute
-    }
-    '/pizzaria-2/cardapio/$categoria': {
-      id: '/pizzaria-2/cardapio/$categoria'
-      path: '/cardapio/$categoria'
-      fullPath: '/pizzaria-2/cardapio/$categoria'
-      preLoaderRoute: typeof Pizzaria2CardapioCategoriaRouteImport
-      parentRoute: typeof Pizzaria2RouteRoute
-    }
     '/pizzaria-2/produto/$slug': {
       id: '/pizzaria-2/produto/$slug'
       path: '/produto/$slug'
@@ -232,17 +193,13 @@ declare module '@tanstack/react-router' {
 interface Pizzaria2RouteRouteChildren {
   Pizzaria2CarrinhoRoute: typeof Pizzaria2CarrinhoRoute
   Pizzaria2IndexRoute: typeof Pizzaria2IndexRoute
-  Pizzaria2CardapioCategoriaRoute: typeof Pizzaria2CardapioCategoriaRoute
   Pizzaria2ProdutoSlugRoute: typeof Pizzaria2ProdutoSlugRoute
-  Pizzaria2CardapioIndexRoute: typeof Pizzaria2CardapioIndexRoute
 }
 
 const Pizzaria2RouteRouteChildren: Pizzaria2RouteRouteChildren = {
   Pizzaria2CarrinhoRoute: Pizzaria2CarrinhoRoute,
   Pizzaria2IndexRoute: Pizzaria2IndexRoute,
-  Pizzaria2CardapioCategoriaRoute: Pizzaria2CardapioCategoriaRoute,
   Pizzaria2ProdutoSlugRoute: Pizzaria2ProdutoSlugRoute,
-  Pizzaria2CardapioIndexRoute: Pizzaria2CardapioIndexRoute,
 }
 
 const Pizzaria2RouteRouteWithChildren = Pizzaria2RouteRoute._addFileChildren(

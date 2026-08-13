@@ -1,9 +1,9 @@
-import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Reveal } from "@/components/site/Reveal";
 import { CategoryTabs } from "./CategoryTabs";
 import { ProductRow } from "./ProductRow";
 import { useCart } from "@/lib/pizzaria2/cart";
-import { categoryBySlug, productsByCategory } from "@/lib/pizzaria2/menu";
+import { categoryBySlug, productsByCategory, type CategorySlug } from "@/lib/pizzaria2/menu";
 
 export const categoryDescriptions: Record<string, string> = {
   tradicionais: "Os clássicos que nunca saem de moda.",
@@ -13,37 +13,32 @@ export const categoryDescriptions: Record<string, string> = {
   acompanhamentos: "Aquele extra pra completar o pedido.",
 };
 
+/**
+ * The full, interactive cardápio — category filters + product list — lives
+ * entirely inside this component so it can be embedded once as a Home
+ * section (#cardapio). Switching categories is local state, not routing.
+ */
 export function CategorySaboresSection({
-  categorySlug,
-  headingTag: HeadingTag = "h2",
-  cta,
+  defaultCategorySlug = "tradicionais",
 }: {
-  categorySlug: string;
-  headingTag?: "h1" | "h2";
-  cta?: { label: string; to: string };
+  defaultCategorySlug?: CategorySlug;
 }) {
   const { addLine } = useCart();
-  const category = categoryBySlug(categorySlug);
-  const items = productsByCategory(categorySlug);
+  const [activeSlug, setActiveSlug] = useState<CategorySlug>(defaultCategorySlug);
+  const category = categoryBySlug(activeSlug);
+  const items = productsByCategory(activeSlug);
 
   if (!category) return null;
 
   return (
     <>
-      <CategoryTabs activeSlug={category.slug} />
+      <CategoryTabs activeSlug={category.slug} onSelect={setActiveSlug} />
 
-      <Reveal variant="up" className="mt-8 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <HeadingTag className="font-display text-2xl font-extrabold text-charcoal sm:text-3xl">
-            {category.name}
-          </HeadingTag>
-          <p className="mt-1.5 text-sm text-charcoal/55">{categoryDescriptions[category.slug]}</p>
-        </div>
-        {cta && (
-          <Link to={cta.to} className="text-sm font-semibold text-tomato hover:underline">
-            {cta.label}
-          </Link>
-        )}
+      <Reveal variant="up" className="mt-8">
+        <h2 className="font-display text-2xl font-extrabold text-charcoal sm:text-3xl">
+          {category.name}
+        </h2>
+        <p className="mt-1.5 text-sm text-charcoal/55">{categoryDescriptions[category.slug]}</p>
       </Reveal>
 
       <div className="mt-6 flex flex-col gap-4 sm:gap-5">

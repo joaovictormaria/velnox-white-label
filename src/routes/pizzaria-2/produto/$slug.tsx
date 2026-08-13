@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -8,6 +8,7 @@ import { MenuThumb } from "@/components/site/pizzaria2/MenuThumb";
 import { PriceTag } from "@/components/site/pizzaria2/PriceTag";
 import { QuantityStepper } from "@/components/site/pizzaria2/QuantityStepper";
 import { useCart } from "@/lib/pizzaria2/cart";
+import { useGoToCardapio } from "@/lib/pizzaria2/go-to-cardapio";
 import {
   categoryBySlug,
   extras as extrasCatalog,
@@ -33,6 +34,7 @@ function PizzariaPersonalizacao() {
   const { slug } = Route.useParams();
   const navigate = useNavigate();
   const { addLine } = useCart();
+  const goToCardapio = useGoToCardapio();
   const product = productBySlug(slug);
 
   const [mode, setMode] = useState<"inteira" | "meia">("inteira");
@@ -63,9 +65,13 @@ function PizzariaPersonalizacao() {
     return (
       <main className="mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-6">
         <p className="text-charcoal/60">Produto não encontrado.</p>
-        <Link to="/pizzaria-2/cardapio" className="mt-3 inline-block font-semibold text-tomato">
+        <button
+          type="button"
+          onClick={goToCardapio}
+          className="mt-3 inline-block font-semibold text-tomato hover:underline"
+        >
           ← Voltar para o cardápio
-        </Link>
+        </button>
       </main>
     );
   }
@@ -115,13 +121,13 @@ function PizzariaPersonalizacao() {
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 sm:py-12">
-      <Link
-        to="/pizzaria-2/cardapio/$categoria"
-        params={{ categoria: product.categorySlug }}
+      <button
+        type="button"
+        onClick={goToCardapio}
         className="inline-flex items-center gap-1.5 text-sm font-medium text-charcoal/60 transition-colors hover:text-tomato"
       >
         <ArrowLeft className="h-4 w-4" /> Voltar para o cardápio
-      </Link>
+      </button>
 
       <div className="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
         <div>
