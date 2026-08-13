@@ -43,10 +43,10 @@ import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
 import { stockImageUrl } from "@/lib/stock-image";
 import { cn } from "@/lib/utils";
 import pizzaHeroVideo from "@/assets/fotos de pizza/3752508-hd_1920_1080_24fps.mp4";
-import mussarelaPhoto from "@/assets/fotos de pizza/-y3e4Lvqgh4UfQ0vaiTswFyofSoaWTBHlslrcGJNafMd4lf-JcPA0blDdDiTqUV4NDKNFSGHkGknskPAvix5eA-PJ8mEZcWQhHXCumGB6WlqKqLWXxVQpgo5928ZFhM5wA2FDMK6HJwUI5m5Jcg9LBO71G9D1uXviuiY663AjmTpjqRQpz7gPWLTuHNwUKH4.jpg";
-import frangoPhoto from "@/assets/fotos de pizza/1F6QlDfR9Sj4OpZh3DUkHH4ZnrhEZsbp5feodht1TWhFHxv2UixIMmcL_7cSgb3Kh_E2gVRHLFaP8mCcoN8csayC6HoIW2oBM7B3WxWDdS7FxPsEP1pQjrtDnzQ_1DicdXd6TZdi98NydR5WuCRy8WtQnBxNxQkv0w_Mt6WYv5bjD1A-rKAbAZIvA8JIPzVc.jpg";
-import pepperoniPhoto from "@/assets/fotos de pizza/1Tu0uqD8wbRCprxkvU5xupqfvgbLPS8Yycuqnh5r2kwNa5ldER9yAnzwfl7QXbCmb4zdMJ1V3p_FsH0-LpzleWIQL7IYLHcSJnELa063LtQXZrxWlWDyMD86mwi9kIK6HWKyOrdfs4E6ZbuoSCSBU9khs8An4zcdCi8f-p33h3BLE5Uk0-AdJFFvanbuSAsI.jpg";
-import quatroQueijosPhoto from "@/assets/fotos de pizza/DXbIkZUlFnaEqBuMvdyvFtveXPvfgGB6My8wFvID47DnWVgcpTb6gxCOZa3xIXACFMa5G252zRbrmAX4mf6EnCXMq5GMEjovjY6JO_Dj2MkIv8w-fRcbGC-144-x3ElJlrUWA48D5Iu-s8l-qqNvY16IqgqGFXuZsgV4VmkywXVm01AODjkjJc1d-6qoOtln.jpg";
+import mussarelaPhoto from "@/assets/fotos de pizza/mussarela.jpg";
+import frangoPhoto from "@/assets/fotos de pizza/frango.jpg";
+import pepperoniPhoto from "@/assets/fotos de pizza/pepperoni.jpg";
+import quatroQueijosPhoto from "@/assets/fotos de pizza/quatro-queijos.jpg";
 
 const title = "Forno & Fogo Pizzaria — Peça pelo WhatsApp";
 const description =
