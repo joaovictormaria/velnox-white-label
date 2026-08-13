@@ -1,8 +1,11 @@
 import {
+  Cake,
   CupSoda,
   Drumstick,
   GlassWater,
+  Pizza,
   Sandwich,
+  Star,
   UtensilsCrossed,
   type LucideIcon,
 } from "lucide-react";
@@ -46,6 +49,7 @@ export const categories: Category[] = [
     name: "Pizzas Tradicionais",
     shortName: "Tradicionais",
     image: mussarelaPhoto,
+    icon: Pizza,
     kind: "pizza",
   },
   {
@@ -53,6 +57,7 @@ export const categories: Category[] = [
     name: "Pizzas Especiais",
     shortName: "Especiais",
     image: quatroQueijosPhoto,
+    icon: Star,
     kind: "pizza",
   },
   {
@@ -60,6 +65,7 @@ export const categories: Category[] = [
     name: "Pizzas Doces",
     shortName: "Doces",
     image: pepperoniPhoto,
+    icon: Cake,
     kind: "pizza",
   },
   {

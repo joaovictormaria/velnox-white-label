@@ -3,7 +3,8 @@ import { Clock, Flame, Leaf, MapPin, Truck, Wheat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/site/Reveal";
 import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
-import heroPizzaPhoto from "@/assets/fotos de pizza/pngtree-taking-slice-picture-of-prepared-delicious-pizza-with-sausage-rings-and-image_15902897.jpg";
+import { CategorySaboresSection } from "@/components/site/pizzaria2/CategorySaboresSection";
+import heroPizzaPhoto from "@/assets/fotos de pizza/pizza-hero.jpg";
 
 const title = "Bella Pizza — A pizza que você estava procurando";
 const description =
@@ -57,77 +58,94 @@ const careItems = [
 function PizzariaInicio() {
   return (
     <main>
-      <section className="mx-auto max-w-[1200px] px-4 pb-12 pt-10 sm:px-6 sm:pb-16 sm:pt-16">
-        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-14">
-          <Reveal variant="up">
-            <h1 className="font-display text-4xl font-extrabold leading-[1.1] sm:text-5xl">
-              <span className="text-charcoal">A pizza que você estava</span>{" "}
-              <span className="text-tomato">procurando.</span>
-            </h1>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-charcoal/60">
-              Massa fermentada por 48h, ingredientes selecionados todo dia e entrega rápida direto
-              na sua casa.
-            </p>
-            <div className="mt-8">
-              <Button
-                size="lg"
-                className="rounded-full bg-tomato px-8 text-base font-semibold text-mozzarella shadow-none hover:bg-tomato/90"
-                asChild
-              >
-                <Link to="/pizzaria-2/cardapio">Ver cardápio →</Link>
-              </Button>
-            </div>
-          </Reveal>
+      <section className="relative flex flex-col overflow-hidden min-h-[calc(100vh-61px)] min-h-[calc(100dvh-61px)]">
+        {/* Text + photo row — grows to fill the hero, but never shrinks below its own content,
+            so the info card below can never climb up and overlap it. */}
+        <div className="flex flex-1 flex-col md:grid md:grid-cols-2 md:grid-rows-[1fr]">
+          {/* Text panel — off-white background, own column, never overlapped by the photo. */}
+          <div className="relative z-10 order-2 flex items-start bg-mozzarella px-4 pt-10 pb-8 sm:px-6 sm:pt-12 md:order-1 md:px-10 md:pt-20 lg:px-16 lg:pt-24">
+            <Reveal variant="up" className="max-w-xl">
+              <h1 className="font-display text-4xl font-extrabold leading-[1.1] sm:text-5xl">
+                <span className="text-charcoal">A pizza que você estava</span>{" "}
+                <span className="text-tomato">procurando.</span>
+              </h1>
+              <p className="mt-5 max-w-md text-base leading-relaxed text-charcoal/60">
+                Massa fermentada por 48h, ingredientes selecionados todo dia e entrega rápida
+                direto na sua casa.
+              </p>
+              <div className="relative mt-8 inline-flex w-fit">
+                <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-tomato/50" />
+                <Button
+                  size="xl"
+                  className="rounded-full bg-tomato px-10 text-lg font-semibold text-mozzarella shadow-none hover:bg-tomato/90"
+                  asChild
+                >
+                  <Link to="/pizzaria-2/cardapio">Ver cardápio →</Link>
+                </Button>
+              </div>
+            </Reveal>
+          </div>
 
-          <Reveal variant="scale" delay={100}>
-            <div className="overflow-hidden rounded-[28px] border border-charcoal/8 shadow-[0_30px_70px_-40px_rgba(23,23,23,0.45)]">
+          {/* Photo — always on the right from md up, full-width above the text on small screens. */}
+          <div className="relative order-1 h-72 sm:h-96 md:order-2 md:h-auto">
+            <Reveal variant="scale" className="h-full w-full">
               <img
                 src={heroPizzaPhoto}
-                alt="Pizza saindo do forno"
-                className="aspect-4/5 w-full object-cover sm:aspect-square lg:aspect-4/5"
+                alt="Pizza de pepperoni com manjericão fresco"
+                className="h-full w-full object-cover"
               />
+            </Reveal>
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-mozzarella to-transparent sm:w-16 md:w-20 lg:w-24" />
+          </div>
+        </div>
+
+        {/* Info card — always follows the row above in normal flow, so it can never overlap
+            the headline or the button, no matter the viewport height or text length. */}
+        <div className="relative z-20 bg-mozzarella px-4 pb-10 pt-6 sm:px-6 sm:pb-12 sm:pt-8">
+          <Reveal
+            variant="up"
+            className="mx-auto grid max-w-[1200px] grid-cols-1 divide-y divide-charcoal/8 overflow-hidden rounded-[28px] border border-charcoal/8 bg-mozzarella shadow-[0_20px_50px_-35px_rgba(23,23,23,0.4)] sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4"
+          >
+            {infoBlocks.map((block) => (
+              <div key={block.title} className="flex flex-col gap-1.5 p-6">
+                <div className="flex items-center gap-2">
+                  {block.dot ? (
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-olive/60" />
+                      <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-olive" />
+                    </span>
+                  ) : (
+                    block.icon && <block.icon className="h-4 w-4 text-tomato" />
+                  )}
+                  <span className="text-sm font-bold text-charcoal">{block.title}</span>
+                </div>
+                <p className="text-xs leading-relaxed text-charcoal/55">{block.detail}</p>
+              </div>
+            ))}
+
+            <div className="flex flex-col gap-1.5 p-6">
+              <div className="flex items-center gap-2">
+                <WhatsAppIcon className="h-4 w-4 text-tomato" />
+                <span className="text-sm font-bold text-charcoal">Dúvidas ou pedidos?</span>
+              </div>
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-fit items-center gap-1.5 text-xs font-semibold text-tomato hover:underline"
+              >
+                <WhatsAppIcon className="h-3.5 w-3.5" /> Chamar no WhatsApp
+              </a>
             </div>
           </Reveal>
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1200px] px-4 sm:px-6">
-        <Reveal
-          variant="up"
-          className="grid grid-cols-1 divide-y divide-charcoal/8 overflow-hidden rounded-[28px] border border-charcoal/8 bg-mozzarella shadow-[0_20px_50px_-35px_rgba(23,23,23,0.4)] sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4"
-        >
-          {infoBlocks.map((block) => (
-            <div key={block.title} className="flex flex-col gap-1.5 p-6">
-              <div className="flex items-center gap-2">
-                {block.dot ? (
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-olive/60" />
-                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-olive" />
-                  </span>
-                ) : (
-                  block.icon && <block.icon className="h-4 w-4 text-tomato" />
-                )}
-                <span className="text-sm font-bold text-charcoal">{block.title}</span>
-              </div>
-              <p className="text-xs leading-relaxed text-charcoal/55">{block.detail}</p>
-            </div>
-          ))}
-
-          <div className="flex flex-col gap-1.5 p-6">
-            <div className="flex items-center gap-2">
-              <WhatsAppIcon className="h-4 w-4 text-tomato" />
-              <span className="text-sm font-bold text-charcoal">Dúvidas ou pedidos?</span>
-            </div>
-            <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex w-fit items-center gap-1.5 text-xs font-semibold text-tomato hover:underline"
-            >
-              <WhatsAppIcon className="h-3.5 w-3.5" /> Chamar no WhatsApp
-            </a>
-          </div>
-        </Reveal>
+      <section className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 sm:py-20">
+        <CategorySaboresSection
+          categorySlug="tradicionais"
+          cta={{ label: "Ver cardápio completo →", to: "/pizzaria-2/cardapio" }}
+        />
       </section>
 
       <section className="relative overflow-hidden py-16 sm:py-24">
