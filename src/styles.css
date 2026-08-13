@@ -64,6 +64,22 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-cream: var(--cream);
+  --color-charcoal: var(--charcoal);
+  --color-tomato: var(--tomato);
+  --color-mozzarella: var(--mozzarella);
+  --color-olive: var(--olive);
+  --font-playfair: var(--font-playfair);
+}
+
+/*
+ * Scope for the /pizzaria-2 demo (Bella Pizza): overrides only the display
+ * font locally so h1-h4/.font-display render in Playfair Display inside
+ * this subtree, without touching the site-wide dark theme or its tokens.
+ */
+.pizzaria2 {
+  --font-display: var(--font-playfair);
 }
 
 :root {
@@ -109,6 +125,19 @@
 
   --font-display: "Space Grotesk", "SF Pro Display", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
+
+  /*
+   * Bella Pizza (rota /pizzaria-2) brand palette — additive tokens only,
+   * scoped via the .pizzaria2 wrapper below. Kept as literal hex (not oklch)
+   * because the client's brand guide specifies these exact hex values and
+   * any oklch round-trip would drift from the mandated swatch.
+   */
+  --cream: #f7f1e8;
+  --charcoal: #171717;
+  --tomato: #e94b2c;
+  --mozzarella: #fffdf8;
+  --olive: #68735a;
+  --font-playfair: "Playfair Display", Georgia, serif;
 
   --gradient-accent: linear-gradient(135deg, var(--primary-glow), var(--primary-deep));
   --gradient-ember: radial-gradient(
