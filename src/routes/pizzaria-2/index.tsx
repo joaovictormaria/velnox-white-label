@@ -1,10 +1,11 @@
 import type { ComponentType } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Circle, Flame, Leaf, MapPin, Truck, Wheat } from "lucide-react";
+import { Camera, Circle, Clock, Flame, Leaf, MapPin, Pizza, Truck, Wheat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/site/Reveal";
 import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
 import { CategorySaboresSection } from "@/components/site/pizzaria2/CategorySaboresSection";
+import { PromoCarousel } from "@/components/site/pizzaria2/PromoCarousel";
 import { useGoToCardapio } from "@/lib/pizzaria2/go-to-cardapio";
 import { cn } from "@/lib/utils";
 import heroPizzaPhoto from "@/assets/fotos de pizza/pizza-hero.jpg";
@@ -180,6 +181,82 @@ function PizzariaInicio() {
         <CategorySaboresSection defaultCategorySlug="tradicionais" />
       </section>
 
+      <section id="promocoes" className="scroll-mt-20 px-4 pb-16 sm:px-6 sm:pb-20">
+        <Reveal variant="up" className="mx-auto max-w-[1200px]">
+          <PromoCarousel />
+        </Reveal>
+      </section>
+
+      <section id="restaurante" className="scroll-mt-20 px-4 pb-16 sm:px-6 sm:pb-24">
+        <div className="mx-auto max-w-[1200px] overflow-hidden rounded-[32px] border border-charcoal/8 bg-mozzarella p-6 shadow-[0_20px_50px_-35px_rgba(23,23,23,0.35)] sm:p-10">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            <Reveal variant="left">
+              <div className="relative aspect-4/3 w-full overflow-hidden rounded-[24px] border border-dashed border-charcoal/15 bg-charcoal/[0.03] sm:aspect-4/5">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-charcoal/25">
+                  <Camera className="h-9 w-9" strokeWidth={1.5} />
+                  <span className="text-xs font-medium">Foto do restaurante em breve</span>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal variant="right">
+              <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-tomato">
+                <span className="h-1.5 w-1.5 rounded-full bg-tomato" />
+                Nosso restaurante
+              </span>
+              <h2 className="mt-3 font-display text-3xl font-extrabold leading-tight text-charcoal sm:text-4xl">
+                Feita com paixão, servida com carinho.
+              </h2>
+              <p className="mt-4 max-w-md text-base leading-relaxed text-charcoal/60">
+                Na Bella Pizza, cada pizza começa com uma massa fermentada por 48 horas,
+                ingredientes selecionados todos os dias e um preparo cuidadoso do início ao fim —
+                para que cada mordida chegue até você com o mesmo carinho de sempre.
+              </p>
+
+              <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div className="flex gap-3">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-tomato/10 text-tomato">
+                    <Clock className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="font-display text-sm font-bold text-charcoal">
+                      Horário de funcionamento
+                    </p>
+                    <p className="mt-1 text-sm leading-relaxed text-charcoal/55">
+                      Seg a Dom
+                      <br />
+                      18h às 23h30
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-olive/10 text-olive">
+                    <MapPin className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="font-display text-sm font-bold text-charcoal">Localização</p>
+                    <p className="mt-1 text-sm leading-relaxed text-charcoal/55">
+                      Av. das Palmeiras, 812
+                      <br />
+                      Jardim das Flores — São Paulo
+                    </p>
+                    <a
+                      href={mapsHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 inline-flex items-center text-sm font-semibold text-tomato hover:underline"
+                    >
+                      Ver no mapa →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
       <section className="relative overflow-hidden py-16 sm:py-24">
         <div className="pointer-events-none absolute -left-16 top-1/2 h-56 w-56 -translate-y-1/2 rounded-full bg-tomato/10 blur-3xl" />
         <div className="pointer-events-none absolute -right-16 top-1/3 h-56 w-56 rounded-full bg-olive/10 blur-3xl" />
@@ -213,6 +290,40 @@ function PizzariaInicio() {
             ))}
           </div>
         </div>
+      </section>
+
+      <section className="px-4 pb-16 sm:px-6 sm:pb-24">
+        <Reveal
+          variant="up"
+          className="relative mx-auto max-w-[1200px] overflow-hidden rounded-[28px] bg-tomato px-6 py-8 shadow-[0_20px_50px_-30px_rgba(233,75,44,0.55)] sm:px-10 sm:py-9"
+        >
+          <div className="pointer-events-none absolute -right-8 -top-8 h-36 w-36 rounded-full bg-mozzarella/10 blur-2xl" />
+          <Pizza
+            strokeWidth={1}
+            className="pointer-events-none absolute -bottom-8 right-4 h-28 w-28 rotate-12 text-mozzarella/10 sm:right-8 sm:h-32 sm:w-32"
+          />
+
+          <div className="relative flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="font-display text-xl font-extrabold text-mozzarella sm:text-2xl">
+                Deu vontade de pizza? 🍕
+              </h2>
+              <p className="mt-1.5 text-sm text-mozzarella/80 sm:text-base">
+                Peça agora pelo WhatsApp e fale diretamente com a gente.
+              </p>
+            </div>
+
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-mozzarella px-6 py-3 text-sm font-semibold text-charcoal shadow-sm transition-transform hover:scale-[1.03] sm:text-base"
+            >
+              <WhatsAppIcon className="h-4 w-4 text-tomato" />
+              Pedir pelo WhatsApp →
+            </a>
+          </div>
+        </Reveal>
       </section>
     </main>
   );

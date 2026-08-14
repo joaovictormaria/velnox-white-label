@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { CartProvider } from "@/lib/pizzaria2/cart";
+import { Footer } from "@/components/site/pizzaria2/Footer";
 import { Header } from "@/components/site/pizzaria2/Header";
 
 export const Route = createFileRoute("/pizzaria-2")({
@@ -19,9 +20,12 @@ export const Route = createFileRoute("/pizzaria-2")({
 function PizzariaLayout() {
   return (
     <CartProvider>
-      <div className="pizzaria2 min-h-screen bg-cream font-sans text-charcoal">
+      <div className="pizzaria2 flex min-h-screen flex-col bg-cream font-sans text-charcoal">
         <Header />
-        <Outlet />
+        <div className="flex-1">
+          <Outlet />
+        </div>
+        <Footer />
       </div>
     </CartProvider>
   );

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Reveal } from "@/components/site/Reveal";
 import { CategoryTabs } from "./CategoryTabs";
-import { ProductRow } from "./ProductRow";
+import { ProductCard } from "./ProductCard";
 import { useCart } from "@/lib/pizzaria2/cart";
 import { categoryBySlug, productsByCategory, type CategorySlug } from "@/lib/pizzaria2/menu";
 
@@ -41,10 +41,10 @@ export function CategorySaboresSection({
         <p className="mt-1.5 text-sm text-charcoal/55">{categoryDescriptions[category.slug]}</p>
       </Reveal>
 
-      <div className="mt-6 flex flex-col gap-4 sm:gap-5">
+      <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
         {items.map((product, i) => (
-          <Reveal key={product.slug} variant="up" delay={Math.min(i * 40, 320)}>
-            <ProductRow
+          <Reveal key={product.slug} variant="up" delay={Math.min(i * 40, 320)} className="h-full">
+            <ProductCard
               product={product}
               linkToCustomize={category.kind === "pizza"}
               onQuickAdd={() =>
