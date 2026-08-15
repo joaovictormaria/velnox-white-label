@@ -1,73 +1,93 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu as MenuIcon, Pizza, ShoppingCart, X } from "lucide-react";
+import { Menu as MenuIcon, Pizza, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useCart } from "@/lib/pizzaria2/cart";
 import { useGoToCardapio } from "@/lib/pizzaria2/go-to-cardapio";
+import { usePizzariaOnboarding } from "@/lib/pizzaria2/onboarding";
+import { useHeaderOverHero } from "@/lib/pizzaria2/hero-overlap";
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const { itemCount } = useCart();
   const goToCardapio = useGoToCardapio();
+  const { businessType, businessName } = usePizzariaOnboarding();
+  const overHero = useHeaderOverHero();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-charcoal/8 bg-mozzarella/95 backdrop-blur">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-charcoal/8 backdrop-blur">
       <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Link to="/pizzaria-2" className="flex items-center gap-2">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-tomato text-mozzarella">
             <Pizza className="h-4.5 w-4.5" />
           </span>
-          <span className="font-display text-lg font-bold text-charcoal">Bella Pizza</span>
+          <span className="flex flex-col leading-tight">
+            <span
+              className={cn(
+                "font-display text-lg font-bold transition-colors",
+                overHero ? "text-mozzarella" : "text-charcoal",
+              )}
+            >
+              {businessName}
+            </span>
+            <span
+              className={cn(
+                "hidden text-[11px] font-medium uppercase tracking-wide transition-colors sm:inline",
+                overHero ? "text-mozzarella/70" : "text-charcoal/45",
+              )}
+            >
+              {businessType}
+            </span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
           <Link
             to="/pizzaria-2"
             activeOptions={{ exact: true }}
-            className="text-sm font-medium text-charcoal/70 transition-colors hover:text-charcoal"
-            activeProps={{ className: "!text-tomato" }}
+            className={cn(
+              "text-sm font-medium transition-colors",
+              overHero ? "text-mozzarella/80 hover:text-mozzarella" : "text-charcoal/70 hover:text-charcoal",
+            )}
+            activeProps={{ className: overHero ? "!text-[#ffd166]" : "!text-tomato" }}
           >
             Início
           </Link>
           <a
             href="/pizzaria-2#cardapio"
             onClick={goToCardapio}
-            className="text-sm font-medium text-charcoal/70 transition-colors hover:text-charcoal"
+            className={cn(
+              "text-sm font-medium transition-colors",
+              overHero ? "text-mozzarella/80 hover:text-mozzarella" : "text-charcoal/70 hover:text-charcoal",
+            )}
           >
             Cardápio
           </a>
-          <span className="cursor-default text-sm font-medium text-charcoal/40">
+          <span
+            className={cn(
+              "cursor-default text-sm font-medium transition-colors",
+              overHero ? "text-mozzarella/40" : "text-charcoal/40",
+            )}
+          >
             Acompanhar pedido
           </span>
-          <span className="cursor-default text-sm font-medium text-charcoal/40">Contato</span>
+          <span
+            className={cn(
+              "cursor-default text-sm font-medium transition-colors",
+              overHero ? "text-mozzarella/40" : "text-charcoal/40",
+            )}
+          >
+            Contato
+          </span>
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
           <button
             type="button"
-            className="hidden rounded-full border border-charcoal/15 px-4 py-1.5 text-sm font-semibold text-charcoal transition-colors hover:border-charcoal/30 sm:inline-flex"
-          >
-            Entrar
-          </button>
-
-          <Link
-            to="/pizzaria-2/carrinho"
-            aria-label="Ver carrinho"
-            className="relative grid h-9 w-9 place-items-center rounded-full text-charcoal transition-colors hover:bg-charcoal/5"
-          >
-            <ShoppingCart className="h-5 w-5" />
-            {itemCount > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 grid h-4.5 min-w-4.5 place-items-center rounded-full bg-tomato px-1 text-[10px] font-bold text-mozzarella">
-                {itemCount}
-              </span>
-            )}
-          </Link>
-
-          <button
-            type="button"
             aria-label="Abrir menu"
             onClick={() => setOpen((v) => !v)}
-            className="grid h-9 w-9 place-items-center rounded-full text-charcoal transition-colors hover:bg-charcoal/5 md:hidden"
+            className={cn(
+              "grid h-9 w-9 place-items-center rounded-full transition-colors md:hidden",
+              overHero ? "text-mozzarella hover:bg-mozzarella/10" : "text-charcoal hover:bg-charcoal/5",
+            )}
           >
             {open ? <X className="h-5 w-5" /> : <MenuIcon className="h-5 w-5" />}
           </button>

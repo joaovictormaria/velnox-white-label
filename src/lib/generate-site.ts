@@ -500,7 +500,8 @@ export const generateSiteContent = createServerFn({ method: "POST" })
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       throw new Error(
-        "ANTHROPIC_API_KEY não configurada no servidor. Adicione a chave no arquivo .env.",
+        "ANTHROPIC_API_KEY não configurada no servidor. Local: adicione no arquivo .env. " +
+          "Em produção: cadastre a variável no painel do provedor (Vercel → Settings → Environment Variables).",
       );
     }
 

@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AlertTriangle, ExternalLink, Loader2, Sparkles } from "lucide-react";
 import { Navbar } from "@/components/site/Navbar";
 import { Button } from "@/components/ui/button";
-import { generateSiteContent, type GeneratedSiteContent } from "@/lib/generate-site.server";
+import { generateSiteContent, type GeneratedSiteContent } from "@/lib/generate-site";
 
 const title = "Analisando com IA — velnox.ia";
 const description =

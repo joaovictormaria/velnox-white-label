@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { CardapioPicker } from "@/components/site/pizzaria2/CardapioPicker";
 import { MenuThumb } from "@/components/site/pizzaria2/MenuThumb";
 import { PriceTag } from "@/components/site/pizzaria2/PriceTag";
 import { QuantityStepper } from "@/components/site/pizzaria2/QuantityStepper";
@@ -23,6 +24,9 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/pizzaria-2/produto/$slug")({
+  validateSearch: (search: Record<string, unknown>): { view?: "cardapio" } => ({
+    view: search.view === "cardapio" ? "cardapio" : undefined,
+  }),
   component: PizzariaPersonalizacao,
 });
 
@@ -32,15 +36,24 @@ const pizzaProducts = products.filter((p) =>
 
 function PizzariaPersonalizacao() {
   const { slug } = Route.useParams();
-  const navigate = useNavigate();
+  const { view } = Route.useSearch();
   const { addLine } = useCart();
   const goToCardapio = useGoToCardapio();
-  const product = productBySlug(slug);
+
+  // The active product lives in local state (seeded from the route param) so
+  // picking another pizza from the in-page cardápio never navigates away —
+  // it just swaps what "activeSlug" points to and slides the screens.
+  const [activeSlug, setActiveSlug] = useState(slug);
+  const [screen, setScreen] = useState<"customize" | "cardapio">(
+    view === "cardapio" ? "cardapio" : "customize",
+  );
+  const [leavingTo, setLeavingTo] = useState<"customize" | "cardapio" | null>(null);
+  const product = productBySlug(activeSlug);
 
   const [mode, setMode] = useState<"inteira" | "meia">("inteira");
   const [size, setSize] = useState<SizeKey>("media");
   const [half2Slug, setHalf2Slug] = useState<string>(
-    pizzaProducts.find((p) => p.slug !== slug)?.slug ?? slug,
+    pizzaProducts.find((p) => p.slug !== activeSlug)?.slug ?? activeSlug,
   );
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [note, setNote] = useState("");
@@ -85,6 +98,11 @@ function PizzariaPersonalizacao() {
     );
   }
 
+  function goToScreen(next: "customize" | "cardapio") {
+    if (leavingTo !== null || next === screen) return;
+    setLeavingTo(next);
+  }
+
   function handleAddToCart() {
     if (!product) return;
     const chosenExtras = selectedExtras
@@ -101,7 +119,18 @@ function PizzariaPersonalizacao() {
       note: note.trim() || undefined,
       qty,
     });
-    navigate({ to: "/pizzaria-2/carrinho" });
+    goToScreen("cardapio");
+  }
+
+  function handleSelectPizza(newSlug: string) {
+    setActiveSlug(newSlug);
+    setMode("inteira");
+    setSize("media");
+    setHalf2Slug(pizzaProducts.find((p) => p.slug !== newSlug)?.slug ?? newSlug);
+    setSelectedExtras([]);
+    setNote("");
+    setQty(1);
+    goToScreen("customize");
   }
 
   function handleAddDrink(drinkSlug: string) {
@@ -129,7 +158,20 @@ function PizzariaPersonalizacao() {
         <ArrowLeft className="h-4 w-4" /> Voltar para o cardápio
       </button>
 
-      <div className="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
+      <div
+        key={screen}
+        onAnimationEnd={() => {
+          if (leavingTo !== null) {
+            setScreen(leavingTo);
+            setLeavingTo(null);
+          }
+        }}
+        className={cn("mt-6", leavingTo !== null ? "animate-card-out" : "animate-card-in")}
+      >
+        {screen === "cardapio" ? (
+          <CardapioPicker onSelectPizza={handleSelectPizza} />
+        ) : (
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
         <div>
           <div className="overflow-hidden rounded-[28px] border border-charcoal/8 shadow-[0_20px_50px_-35px_rgba(23,23,23,0.4)]">
             <img
@@ -326,6 +368,8 @@ function PizzariaPersonalizacao() {
             </div>
           )}
         </div>
+          </div>
+        )}
       </div>
     </main>
   );

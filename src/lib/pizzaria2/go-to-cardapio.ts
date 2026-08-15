@@ -5,7 +5,14 @@ const HOME_PATH = "/pizzaria-2";
 const CARDAPIO_SECTION_ID = "cardapio";
 
 function scrollToCardapio() {
-  document.getElementById(CARDAPIO_SECTION_ID)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const scroll = () =>
+    document.getElementById(CARDAPIO_SECTION_ID)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  scroll();
+  // The hero's photo carousel and other images are often still loading right
+  // after navigating Home, which shifts everything below the fold — nudge
+  // the scroll back at the section a few more times so it settles there
+  // instead of drifting back toward the top once those images land.
+  [150, 400, 800].forEach((delay) => setTimeout(scroll, delay));
 }
 
 /**

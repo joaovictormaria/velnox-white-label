@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, Pizza } from "lucide-react";
+import { Mail, MapPin, Pizza } from "lucide-react";
 import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
 import { FacebookIcon, InstagramIcon, TikTokIcon } from "@/components/site/pizzaria2/SocialIcons";
 import { useGoToCardapio } from "@/lib/pizzaria2/go-to-cardapio";
+import { usePizzariaOnboarding, whatsappLink } from "@/lib/pizzaria2/onboarding";
 
-const whatsappHref = "https://wa.me/5511999999999";
 const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
   "Av. das Palmeiras, 812 - Jardim das Flores, São Paulo - SP",
 )}`;
@@ -17,6 +17,8 @@ const socialLinks = [
 
 export function Footer() {
   const goToCardapio = useGoToCardapio();
+  const { businessName, businessPhone, businessEmail } = usePizzariaOnboarding();
+  const whatsappHref = whatsappLink(businessPhone);
 
   return (
     <footer className="border-t border-charcoal/8 bg-cream">
@@ -27,7 +29,7 @@ export function Footer() {
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-tomato text-mozzarella">
                 <Pizza className="h-4.5 w-4.5" />
               </span>
-              <span className="font-display text-lg font-bold text-charcoal">Bella Pizza</span>
+              <span className="font-display text-lg font-bold text-charcoal">{businessName}</span>
             </div>
             <p className="mt-4 max-w-[26ch] text-sm leading-relaxed text-charcoal/55">
               Pizza artesanal feita com carinho, para deixar seus momentos ainda melhores.
@@ -89,7 +91,18 @@ export function Footer() {
                   WhatsApp
                 </a>
               </li>
-              <li>(11) 99999-9999</li>
+              <li>{businessPhone}</li>
+              {businessEmail && (
+                <li>
+                  <a
+                    href={`mailto:${businessEmail}`}
+                    className="inline-flex items-center gap-1.5 transition-colors hover:text-tomato"
+                  >
+                    <Mail className="h-3.5 w-3.5" />
+                    {businessEmail}
+                  </a>
+                </li>
+              )}
               <li className="text-charcoal/50">Seg a Dom: 18h às 23h30</li>
             </ul>
           </div>
@@ -117,7 +130,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-charcoal/8 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-charcoal/45">
-            © {new Date().getFullYear()} Bella Pizza · Todos os direitos reservados
+            © {new Date().getFullYear()} {businessName} · Todos os direitos reservados
           </p>
           <div className="flex items-center gap-4 text-xs text-charcoal/45">
             <a href="#" className="transition-colors hover:text-tomato">

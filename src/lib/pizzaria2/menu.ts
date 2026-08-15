@@ -114,22 +114,6 @@ export const products: Product[] = [
     image: mussarelaPhoto,
     categorySlug: "tradicionais",
   },
-  {
-    slug: "portuguesa",
-    name: "Portuguesa",
-    desc: "Presunto, ovos, cebola, ervilha e azeitonas.",
-    price: 45.9,
-    image: quatroQueijosPhoto,
-    categorySlug: "tradicionais",
-  },
-  {
-    slug: "napolitana",
-    name: "Napolitana",
-    desc: "Molho de tomate, mussarela, parmesão e orégano.",
-    price: 38.9,
-    image: mussarelaPhoto,
-    categorySlug: "tradicionais",
-  },
 
   // Especiais
   {

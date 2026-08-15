@@ -22,7 +22,7 @@ function PizzariaLayout() {
     <CartProvider>
       <div className="pizzaria2 flex min-h-screen flex-col bg-cream font-sans text-charcoal">
         <Header />
-        <div className="flex-1">
+        <div className="flex-1 pt-16.75">
           <Outlet />
         </div>
         <Footer />

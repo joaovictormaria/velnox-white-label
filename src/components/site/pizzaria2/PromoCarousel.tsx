@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Camera, ChevronLeft, ChevronRight } from "lucide-react";
+import { usePizzariaOnboarding, whatsappLink } from "@/lib/pizzaria2/onboarding";
 import { cn } from "@/lib/utils";
 
 type PromoSlide = {
@@ -12,8 +13,6 @@ type PromoSlide = {
   originalPrice?: string;
   whatsappMessage: string;
 };
-
-const whatsappNumber = "5511999999999";
 
 const promoSlides: PromoSlide[] = [
   {
@@ -44,6 +43,7 @@ const promoSlides: PromoSlide[] = [
 export function PromoCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const { businessPhone } = usePizzariaOnboarding();
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -104,7 +104,7 @@ export function PromoCarousel() {
                   </div>
 
                   <a
-                    href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(slide.whatsappMessage)}`}
+                    href={whatsappLink(businessPhone, slide.whatsappMessage)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-7 inline-flex items-center gap-1.5 rounded-full bg-mozzarella px-6 py-3 text-sm font-semibold text-tomato shadow-sm transition-transform hover:scale-[1.03]"

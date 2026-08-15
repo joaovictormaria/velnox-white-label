@@ -4,7 +4,7 @@ import { ArrowRight, Menu, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
 import { stockImageUrl } from "@/lib/stock-image";
-import type { GeneratedSiteContent } from "@/lib/generate-site.server";
+import type { GeneratedSiteContent } from "@/lib/generate-site";
 
 export const Route = createFileRoute("/preview")({
   head: () => ({

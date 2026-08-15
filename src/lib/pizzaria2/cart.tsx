@@ -42,7 +42,6 @@ const STORAGE_KEY = "velnox:pizzaria2:cart";
 const DELIVERY_FEE = 6;
 
 function readInitialLines(): CartLine[] {
-  if (typeof window === "undefined") return [];
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
@@ -54,9 +53,20 @@ function readInitialLines(): CartLine[] {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [lines, setLines] = useState<CartLine[]>(readInitialLines);
+  // Starts empty so the very first client render matches the server (which
+  // has no access to sessionStorage) — the real cart loads right after, in
+  // this effect, instead of in the initializer where it would run during
+  // hydration itself and trigger a mismatch.
+  const [lines, setLines] = useState<CartLine[]>([]);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setLines(readInitialLines());
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
     try {
       // `icon` holds a component reference (Lucide forwardRef object), not
       // plain data — JSON.stringify silently collapses it to `{}`, which then

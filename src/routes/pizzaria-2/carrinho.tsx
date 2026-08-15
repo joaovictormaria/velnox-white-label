@@ -1,26 +1,31 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CartItemRow } from "@/components/site/pizzaria2/CartItemRow";
 import { MenuThumb } from "@/components/site/pizzaria2/MenuThumb";
 import { PriceTag } from "@/components/site/pizzaria2/PriceTag";
 import { useCart } from "@/lib/pizzaria2/cart";
-import { useGoToCardapio } from "@/lib/pizzaria2/go-to-cardapio";
-import { formatCurrency, productBySlug, suggestedDrinkSlugs } from "@/lib/pizzaria2/menu";
+import { formatCurrency, productBySlug, productsByCategory, suggestedDrinkSlugs } from "@/lib/pizzaria2/menu";
+import { usePizzariaOnboarding, whatsappLink } from "@/lib/pizzaria2/onboarding";
 
 export const Route = createFileRoute("/pizzaria-2/carrinho")({
   component: PizzariaCarrinho,
 });
 
+// "Continuar comprando" reopens the same rich cardápio picker the produto
+// screen uses — it just needs *a* pizza slug to anchor that route.
+const cardapioAnchorSlug = productsByCategory("tradicionais")[0]?.slug ?? "";
+
 function PizzariaCarrinho() {
   const { lines, addLine, removeLine, clearCart, subtotal, deliveryFee, total } = useCart();
-  const goToCardapio = useGoToCardapio();
+  const { businessPhone } = usePizzariaOnboarding();
 
   const suggestedDrinks = suggestedDrinkSlugs
     .map((slug) => productBySlug(slug))
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
-  const whatsappHref = `https://wa.me/5511999999999?text=${encodeURIComponent(
+  const whatsappHref = whatsappLink(
+    businessPhone,
     `Oi! Quero fazer este pedido:\n${lines
       .map((l) => {
         const extrasTotal = l.extras.reduce((s, e) => s + e.price, 0);
@@ -28,7 +33,7 @@ function PizzariaCarrinho() {
         return `${l.qty}x ${l.name}${l.sizeLabel ? ` - ${l.sizeLabel}` : ""}${extrasText} — ${formatCurrency(l.unitPrice + extrasTotal)}`;
       })
       .join("\n")}\n\nSubtotal: ${formatCurrency(subtotal)}\nTaxa de entrega: ${formatCurrency(deliveryFee)}\nTotal: ${formatCurrency(total)}`,
-  )}`;
+  );
 
   return (
     <main className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 sm:py-12">
@@ -52,10 +57,16 @@ function PizzariaCarrinho() {
         <div className="mt-10 rounded-3xl border border-dashed border-charcoal/15 py-16 text-center">
           <p className="text-sm text-charcoal/55">Seu carrinho está vazio.</p>
           <Button
-            onClick={goToCardapio}
+            asChild
             className="mt-5 rounded-full bg-tomato text-mozzarella shadow-none hover:bg-tomato/90"
           >
-            Ver cardápio
+            <Link
+              to="/pizzaria-2/produto/$slug"
+              params={{ slug: cardapioAnchorSlug }}
+              search={{ view: "cardapio" }}
+            >
+              Ver cardápio
+            </Link>
           </Button>
         </div>
       ) : (
@@ -128,11 +139,17 @@ function PizzariaCarrinho() {
       {lines.length > 0 && (
         <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
           <Button
+            asChild
             variant="outline"
-            onClick={goToCardapio}
             className="rounded-full border-charcoal/20 bg-mozzarella text-charcoal hover:bg-charcoal/5"
           >
-            ← Continuar comprando
+            <Link
+              to="/pizzaria-2/produto/$slug"
+              params={{ slug: cardapioAnchorSlug }}
+              search={{ view: "cardapio" }}
+            >
+              ← Continuar comprando
+            </Link>
           </Button>
           <Button
             asChild

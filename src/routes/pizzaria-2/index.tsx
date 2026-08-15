@@ -1,16 +1,20 @@
-import type { ComponentType } from "react";
+import { useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Camera, Circle, Clock, Flame, Leaf, MapPin, Pizza, Truck, Wheat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/site/Reveal";
+import { TypingText } from "@/components/site/TypingText";
 import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
 import { CategorySaboresSection } from "@/components/site/pizzaria2/CategorySaboresSection";
 import { PromoCarousel } from "@/components/site/pizzaria2/PromoCarousel";
 import { useGoToCardapio } from "@/lib/pizzaria2/go-to-cardapio";
+import { usePizzariaOnboarding, whatsappLink } from "@/lib/pizzaria2/onboarding";
+import { HERO_BOUNDARY_ID } from "@/lib/pizzaria2/hero-overlap";
 import { cn } from "@/lib/utils";
 import heroPizzaPhoto from "@/assets/fotos de pizza/pizza-hero.jpg";
+import heroPizzaPhotoOven from "@/assets/fotos de pizza/pizza-hero.jpeg";
 
-const title = "Bella Pizza — A pizza que você estava procurando";
+const title = "Pizzaria — Cardápio online e entrega rápida | velnox.ia";
 const description =
   "Cardápio completo, entrega rápida e pedido online. Pizzas tradicionais, especiais e doces feitas com carinho.";
 
@@ -26,47 +30,9 @@ export const Route = createFileRoute("/pizzaria-2/")({
   component: PizzariaInicio,
 });
 
-const whatsappHref = "https://wa.me/5511999999999";
 const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
   "Av. das Palmeiras, 812 - Jardim das Flores",
 )}`;
-
-const infoBlocks: {
-  icon: ComponentType<{ className?: string }>;
-  tone: "olive" | "tomato";
-  title: string;
-  detail: string[];
-  badge?: string;
-  action?: { label: string; href: string };
-}[] = [
-  {
-    icon: Circle,
-    tone: "olive",
-    title: "Aberto agora",
-    detail: ["Fecha às 23:30"],
-    badge: "Aberto",
-  },
-  {
-    icon: Truck,
-    tone: "tomato",
-    title: "Entrega em até 40 min",
-    detail: ["Taxa a partir de R$ 6,00"],
-  },
-  {
-    icon: MapPin,
-    tone: "tomato",
-    title: "Endereço",
-    detail: ["Av. das Palmeiras, 812 —", "Jardim das Flores"],
-    action: { label: "Ver no mapa →", href: mapsHref },
-  },
-  {
-    icon: WhatsAppIcon,
-    tone: "tomato",
-    title: "Dúvidas ou pedidos?",
-    detail: ["Fale com a gente"],
-    action: { label: "Chamar no WhatsApp →", href: whatsappHref },
-  },
-];
 
 const careItems = [
   { icon: Leaf, label: "Ingredientes selecionados" },
@@ -75,35 +41,131 @@ const careItems = [
   { icon: Truck, label: "Entrega rápida e segura" },
 ];
 
+const heroPhotos = [heroPizzaPhoto, heroPizzaPhotoOven];
+
+const heroCravings = [
+  "queijo derretido?",
+  "massa crocante?",
+  "uma pizza saindo do forno?",
+  "uma borda douradinha?",
+  "uma pizza bem recheada?",
+  "um sabor irresistível?",
+  "comer bem?",
+];
+
 function PizzariaInicio() {
   const goToCardapio = useGoToCardapio();
+  const { businessName, businessPhone } = usePizzariaOnboarding();
+  const whatsappHref = whatsappLink(businessPhone);
+
+  const [activePhoto, setActivePhoto] = useState(0);
+  const [hasSwitchedPhoto, setHasSwitchedPhoto] = useState(false);
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActivePhoto((i) => (i + 1) % heroPhotos.length);
+      setHasSwitchedPhoto(true);
+    }, 5000);
+    return () => clearInterval(id);
+  }, []);
+
+  const isOpen = true; // "Aberto agora" — flip to preview the closed (blinking red) state.
+
+  const infoBlocks: {
+    icon: ComponentType<{ className?: string }>;
+    iconClassName?: string;
+    tone: "olive" | "tomato";
+    title: string;
+    detail: string[];
+    badge?: string;
+    action?: { label: string; href: string };
+    renderIcon?: () => ReactNode;
+  }[] = [
+    {
+      icon: Circle,
+      tone: isOpen ? "olive" : "tomato",
+      title: "Aberto agora",
+      detail: [isOpen ? "Fecha às 23:30" : "Abre às 18:00"],
+      badge: isOpen ? "Aberto" : "Fechado",
+      renderIcon: () => (
+        <span className="relative flex h-3 w-3">
+          <span
+            className={cn(
+              "absolute inset-0 animate-ping rounded-full",
+              isOpen ? "bg-olive" : "bg-tomato",
+            )}
+          />
+          <span className={cn("relative h-3 w-3 rounded-full", isOpen ? "bg-olive" : "bg-tomato")} />
+        </span>
+      ),
+    },
+    {
+      icon: Truck,
+      tone: "tomato",
+      title: "Entrega em até 40 min",
+      detail: ["Taxa a partir de R$ 6,00"],
+      renderIcon: () => (
+        <span className="relative flex h-5 w-5 items-center justify-center">
+          <span className="pointer-events-none absolute -left-1 top-0 flex flex-col gap-0.5">
+            <span
+              className="h-1 w-1 rounded-full bg-tomato/60 animate-truck-smoke"
+              style={{ animationDelay: "0s" }}
+            />
+            <span
+              className="h-1 w-1 rounded-full bg-tomato/60 animate-truck-smoke"
+              style={{ animationDelay: "0.35s" }}
+            />
+            <span
+              className="h-1 w-1 rounded-full bg-tomato/60 animate-truck-smoke"
+              style={{ animationDelay: "0.7s" }}
+            />
+          </span>
+          <Truck className="h-5 w-5 animate-truck-drive" />
+        </span>
+      ),
+    },
+    {
+      icon: MapPin,
+      iconClassName: "animate-bounce",
+      tone: "tomato",
+      title: "Endereço",
+      detail: ["Av. das Palmeiras, 812 —", "Jardim das Flores"],
+      action: { label: "Ver no mapa →", href: mapsHref },
+    },
+    {
+      icon: WhatsAppIcon,
+      iconClassName: "animate-phone-ring",
+      tone: "tomato",
+      title: "Dúvidas ou pedidos?",
+      detail: ["Fale com a gente"],
+      action: { label: "Chamar no WhatsApp →", href: whatsappHref },
+    },
+  ];
 
   return (
     <main>
-      <section className="relative flex flex-col overflow-hidden min-h-[calc(100vh-61px)] min-h-[calc(100dvh-61px)]">
+      <section className="relative -mt-16.75 flex flex-col overflow-hidden min-h-screen min-h-dvh">
         {/* Text + photo row — grows to fill the hero, but never shrinks below its own content,
             so the info card below can never climb up and overlap it. */}
-        <div className="flex flex-1 flex-col md:grid md:grid-cols-2 md:grid-rows-[1fr]">
-          {/* Text panel — off-white background, own column, never overlapped by the photo. */}
-          {/* Left padding mirrors the header's max-w-[1200px] container so the
-              headline/button align with the logo at any viewport width, not
-              just at the breakpoints a fixed px-* scale would hit. */}
-          <div className="relative z-10 order-2 flex items-start bg-mozzarella px-4 pt-10 pb-8 sm:px-[max(1.5rem,calc((100vw-1200px)/2+1.5rem))] sm:pt-12 md:order-1 md:pt-20 lg:pt-24">
-            <Reveal variant="up" className="max-w-xl">
-              <h1 className="font-display text-4xl font-extrabold leading-[1.1] sm:text-5xl">
-                <span className="text-charcoal">A pizza que você estava</span>{" "}
-                <span className="text-tomato">procurando.</span>
+        <div className="flex flex-1 flex-col bg-gradient-accent md:grid md:grid-cols-2 md:grid-rows-[1fr]">
+          {/* Text panel — sits on the shared accent gradient (bg lives on the row above),
+              so the photo's masked edge blends into the exact same gradient with no seam. */}
+          <div className="relative z-10 order-2 flex items-center justify-center px-4 py-10 sm:px-6 md:order-1">
+            <Reveal variant="up" className="mx-auto max-w-xl text-center">
+              <h1 className="font-display text-[7vw] font-extrabold leading-[1.1] sm:text-5xl md:text-4xl lg:text-5xl">
+                <span className="block whitespace-nowrap text-mozzarella">Bateu aquela vontade de</span>
+                <span className="block min-h-[1.2em] whitespace-nowrap text-[#ffd166] md:text-3xl lg:text-4xl xl:text-5xl">
+                  <TypingText texts={heroCravings} className="text-[#ffd166]" caretClassName="text-[#ffd166]/70" />
+                </span>
               </h1>
-              <p className="mt-5 max-w-md text-base leading-relaxed text-charcoal/60">
-                Massa fermentada por 48h, ingredientes selecionados todo dia e entrega rápida
-                direto na sua casa.
+              <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-mozzarella/75">
+                Escolha seus sabores favoritos e peça agora.
               </p>
               <div className="relative mt-8 inline-flex w-fit">
-                <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-tomato/50" />
+                <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-mozzarella/40" />
                 <Button
                   size="xl"
                   onClick={goToCardapio}
-                  className="rounded-full bg-tomato px-10 text-lg font-semibold text-mozzarella shadow-none hover:bg-tomato/90"
+                  className="rounded-full bg-mozzarella px-10 text-lg font-semibold text-tomato shadow-none hover:bg-mozzarella/90"
                 >
                   Ver cardápio →
                 </Button>
@@ -111,18 +173,37 @@ function PizzariaInicio() {
             </Reveal>
           </div>
 
-          {/* Photo — always on the right from md up, full-width above the text on small screens. */}
+          {/* Photo — always on the right from md up, full-width above the text on small screens.
+              Its own edge fades out (mask, not an overlay) so the shared gradient behind it
+              shows through with no seam — the photo dissolves into the red, not cut by it. */}
           <div className="relative order-1 h-72 sm:h-96 md:order-2 md:h-auto">
-            <Reveal variant="scale" className="h-full w-full">
-              <img
-                src={heroPizzaPhoto}
-                alt="Pizza de pepperoni com manjericão fresco"
-                className="h-full w-full object-cover"
-              />
+            <Reveal variant="scale" className="relative h-full w-full">
+              {heroPhotos.map((photo, i) => (
+                <img
+                  key={photo}
+                  src={photo}
+                  alt="Pizza de pepperoni com manjericão fresco"
+                  className={cn(
+                    "absolute inset-0 h-full w-full object-cover",
+                    "mask-[linear-gradient(to_top,transparent,black_35%)] [-webkit-mask-image:linear-gradient(to_top,transparent,black_35%)]",
+                    "md:mask-[linear-gradient(to_right,transparent,black_22%)] md:[-webkit-mask-image:linear-gradient(to_right,transparent,black_22%)]",
+                    !hasSwitchedPhoto
+                      ? i === activePhoto
+                        ? "opacity-100"
+                        : "-translate-x-20 opacity-0"
+                      : i === activePhoto
+                        ? "animate-[slide-in-from-right_0.9s_ease-out_forwards]"
+                        : "animate-[slide-out-to-left_0.9s_ease-in_forwards]",
+                  )}
+                />
+              ))}
             </Reveal>
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-mozzarella to-transparent sm:w-16 md:w-20 lg:w-24" />
           </div>
         </div>
+
+        {/* Marks where the red gradient ends, so the fixed header knows when to
+            switch from light to dark text (see useHeaderOverHero). */}
+        <div id={HERO_BOUNDARY_ID} className="h-px" />
 
         {/* Info card — always follows the row above in normal flow, so it can never overlap
             the headline or the button, no matter the viewport height or text length. */}
@@ -140,7 +221,7 @@ function PizzariaInicio() {
                       block.tone === "olive" ? "bg-olive/10 text-olive" : "bg-tomato/10 text-tomato",
                     )}
                   >
-                    <block.icon className="h-5 w-5" />
+                    {block.renderIcon ? block.renderIcon() : <block.icon className={cn("h-5 w-5", block.iconClassName)} />}
                   </span>
                   <span className="font-display text-sm font-bold text-charcoal">
                     {block.title}
@@ -149,14 +230,19 @@ function PizzariaInicio() {
 
                 <div className="flex-1">
                   {block.detail.map((line) => (
-                    <p key={line} className="text-xs leading-relaxed text-charcoal/55">
+                    <p key={line} className="text-sm font-semibold leading-relaxed text-charcoal/80">
                       {line}
                     </p>
                   ))}
                 </div>
 
                 {block.badge && (
-                  <span className="inline-flex w-fit items-center rounded-full bg-olive/10 px-2.5 py-1 text-[11px] font-semibold text-olive">
+                  <span
+                    className={cn(
+                      "inline-flex w-fit items-center rounded-full px-2.5 py-1 text-[11px] font-semibold",
+                      block.tone === "olive" ? "bg-olive/10 text-olive" : "bg-tomato/10 text-tomato",
+                    )}
+                  >
                     {block.badge}
                   </span>
                 )}
@@ -177,8 +263,12 @@ function PizzariaInicio() {
         </div>
       </section>
 
-      <section id="cardapio" className="scroll-mt-20 mx-auto max-w-[1200px] px-4 py-16 sm:px-6 sm:py-20">
-        <CategorySaboresSection defaultCategorySlug="tradicionais" />
+      <section id="cardapio" className="relative scroll-mt-20 overflow-hidden">
+        <div className="pointer-events-none absolute -left-20 top-10 h-64 w-64 rounded-full bg-tomato/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-20 bottom-10 h-72 w-72 rounded-full bg-olive/10 blur-3xl" />
+        <div className="relative mx-auto max-w-[1800px] px-6 py-20 sm:px-10 sm:py-24 xl:px-16">
+          <CategorySaboresSection defaultCategorySlug="tradicionais" />
+        </div>
       </section>
 
       <section id="promocoes" className="scroll-mt-20 px-4 pb-16 sm:px-6 sm:pb-20">
@@ -208,7 +298,7 @@ function PizzariaInicio() {
                 Feita com paixão, servida com carinho.
               </h2>
               <p className="mt-4 max-w-md text-base leading-relaxed text-charcoal/60">
-                Na Bella Pizza, cada pizza começa com uma massa fermentada por 48 horas,
+                Na {businessName}, cada pizza começa com uma massa fermentada por 48 horas,
                 ingredientes selecionados todos os dias e um preparo cuidadoso do início ao fim —
                 para que cada mordida chegue até você com o mesmo carinho de sempre.
               </p>
