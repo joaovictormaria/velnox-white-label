@@ -40,7 +40,7 @@ import { ReviewsSection } from "@/components/site/pizzaria2/ReviewsSection";
 import { ReviewsMarquee } from "@/components/site/pizzaria2/ReviewsMarquee";
 import { ReviewsProvider } from "@/lib/pizzaria2/reviews-provider";
 import { useGoToCardapio } from "@/lib/pizzaria2/go-to-cardapio";
-import { useStore } from "@/lib/pizzaria2/store-provider";
+import { tituloDaVitrine, useStore } from "@/lib/pizzaria2/store-provider";
 import { useMenu } from "@/lib/pizzaria2/menu-provider";
 import { useCart } from "@/lib/pizzaria2/cart";
 import { HERO_BOUNDARY_ID } from "@/lib/pizzaria2/hero-overlap";
@@ -59,7 +59,7 @@ export const Route = createFileRoute("/$storeSlug/")({
   loader: ({ params }) => getResumoDaLoja(params.storeSlug),
   head: ({ loaderData }) => {
     const name = loaderData?.nome ?? "Cardápio";
-    const title = `${name} — Cardápio online e entrega rápida`;
+    const title = tituloDaVitrine(name);
     const description =
       loaderData?.descricao ??
       `Cardápio completo de ${name}, com pedido online e entrega rápida.`;

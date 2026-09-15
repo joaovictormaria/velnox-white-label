@@ -89,6 +89,17 @@ const SHORT_DAY: Record<Weekday, string> = {
   SUNDAY: "Dom",
 };
 
+/**
+ * Título da aba e da prévia ao compartilhar o cardápio.
+ *
+ * Fica num só lugar porque tem dois chamadores que não podem divergir: o
+ * `head()` da rota, que roda no servidor com o nome da loja mockada, e o efeito
+ * do layout, que corrige o título no cliente quando o formulário trocou o nome.
+ */
+export function tituloDaVitrine(nomeDaLoja: string) {
+  return `${nomeDaLoja} — Cardápio online e entrega rápida`;
+}
+
 export function whatsappLink(phone: string, message?: string) {
   const digits = phone.replace(/\D/g, "");
   if (!digits) return "";

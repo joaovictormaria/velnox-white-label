@@ -1,49 +1,89 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { StorePayload } from "./store-provider";
 
 const STORAGE_KEY = "velnox:onboarding";
 
-export const DEFAULT_BUSINESS_TYPE = "Pizzaria";
-export const DEFAULT_BUSINESS_NAME = "Bella Pizza";
-export const DEFAULT_BUSINESS_PHONE = "(11) 99999-9999";
-export const DEFAULT_BUSINESS_EMAIL = "";
-
-type OnboardingData = {
-  businessType: string;
-  businessName: string;
-  businessPhone: string;
-  businessEmail: string;
+/**
+ * O que a pessoa preencheu no formulário de "Criar meu site".
+ *
+ * Todos os campos são opcionais de propósito: quem abre uma vitrine direto,
+ * sem passar pelo formulário, não tem nada aqui — e nesse caso os dados da
+ * loja mockada é que devem valer. Uma versão anterior deste módulo devolvia
+ * defaults de demonstração ("Bella Pizza", "(11) 99999-9999"); reaproveitá-los
+ * agora apagaria o nome de toda loja mockada.
+ */
+export type DadosDoFormulario = {
+  businessType?: string;
+  businessName?: string;
+  businessPhone?: string;
+  businessEmail?: string;
 };
 
-const defaults: OnboardingData = {
-  businessType: DEFAULT_BUSINESS_TYPE,
-  businessName: DEFAULT_BUSINESS_NAME,
-  businessPhone: DEFAULT_BUSINESS_PHONE,
-  businessEmail: DEFAULT_BUSINESS_EMAIL,
-};
+function limpar(valor: unknown): string | undefined {
+  return typeof valor === "string" && valor.trim() ? valor.trim() : undefined;
+}
 
-/** Reads the business info the client entered in the "Criar meu site" onboarding
- * form (stored client-side in sessionStorage), falling back to the demo defaults
- * when someone opens /$storeSlug directly without going through that flow. */
-export function usePizzariaOnboarding(): OnboardingData {
-  const [data, setData] = useState<OnboardingData>(defaults);
+/**
+ * Lê o formulário do `sessionStorage`.
+ *
+ * Num efeito, e não durante a renderização: `sessionStorage` não existe no
+ * servidor, e semear o estado com ele faria o HTML do cliente discordar do
+ * servidor e quebrar a hidratação.
+ */
+export function useDadosDoFormulario(): DadosDoFormulario | null {
+  const [dados, setDados] = useState<DadosDoFormulario | null>(null);
 
   useEffect(() => {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
+    let bruto: string | null = null;
     try {
-      const parsed = JSON.parse(raw) as Partial<OnboardingData>;
-      setData({
-        businessType: parsed.businessType?.trim() || DEFAULT_BUSINESS_TYPE,
-        businessName: parsed.businessName?.trim() || DEFAULT_BUSINESS_NAME,
-        businessPhone: parsed.businessPhone?.trim() || DEFAULT_BUSINESS_PHONE,
-        businessEmail: parsed.businessEmail?.trim() || DEFAULT_BUSINESS_EMAIL,
-      });
+      bruto = sessionStorage.getItem(STORAGE_KEY);
     } catch {
-      // Malformed session data — keep defaults.
+      // Armazenamento bloqueado (aba anônima, cookies desligados): segue no mock.
+      return;
+    }
+    if (!bruto) return;
+    try {
+      const lido = JSON.parse(bruto) as Record<string, unknown>;
+      const dados: DadosDoFormulario = {
+        businessType: limpar(lido.businessType),
+        businessName: limpar(lido.businessName),
+        businessPhone: limpar(lido.businessPhone),
+        businessEmail: limpar(lido.businessEmail),
+      };
+      // Objeto sem nenhum campo útil não deve disparar sobrescrita nenhuma.
+      if (Object.values(dados).some(Boolean)) setDados(dados);
+    } catch {
+      // JSON corrompido — mantém o mock.
     }
   }, []);
 
-  return data;
+  return dados;
+}
+
+/**
+ * A loja que a vitrine deve mostrar: o mock, com os dados do formulário por cima.
+ *
+ * Este é o ÚNICO ponto de junção entre formulário e vitrine. O resultado é um
+ * `StorePayload` comum — o mesmo contrato que o backend devolverá um dia —, então
+ * nenhum componente precisa saber que existe formulário: todos seguem lendo de
+ * `useStore()`. Sem dados preenchidos, devolve o mock intocado.
+ *
+ * `businessType` NÃO é sobrescrito: ele escolhe as fotos e a copy do hero, que
+ * precisam continuar combinando com os produtos da loja mockada. Trocá-lo poria
+ * um hero de açaí em cima de um cardápio de hambúrguer.
+ */
+export function useLojaComDadosDoFormulario(mock: StorePayload): StorePayload {
+  const dados = useDadosDoFormulario();
+
+  return useMemo(() => {
+    if (!dados) return mock;
+    return {
+      ...mock,
+      storeName: dados.businessName ?? mock.storeName,
+      whatsappNumber: dados.businessPhone ?? mock.whatsappNumber,
+      email: dados.businessEmail ?? mock.email,
+    };
+  }, [mock, dados]);
 }
 
 export function whatsappLink(phone: string, message?: string) {
