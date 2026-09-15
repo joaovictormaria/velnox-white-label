@@ -1,4 +1,5 @@
 import type { MouseEvent } from "react";
+import { useStore } from "@/lib/pizzaria2/store-provider";
 import { Link } from "@tanstack/react-router";
 import { Flame, Heart, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -6,7 +7,7 @@ import { PriceTag } from "./PriceTag";
 import type { Product } from "@/lib/pizzaria2/menu";
 
 const ctaClassName =
-  "inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-tomato px-4.5 py-3 text-sm font-semibold text-mozzarella transition-colors hover:bg-tomato/90";
+  "inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-tomato px-4.5 py-3 text-sm font-semibold text-[color:var(--on-primary)] transition-colors hover:bg-tomato/90";
 
 export function ProductCard({
   product,
@@ -16,6 +17,8 @@ export function ProductCard({
   tags,
   favorited,
   onToggleFavorite,
+  ctaQuickAdd,
+  marcado,
 }: {
   product: Product;
   linkToCustomize: boolean;
@@ -27,7 +30,20 @@ export function ProductCard({
   tags?: string[];
   favorited?: boolean;
   onToggleFavorite?: () => void;
+  /** Body opens the produto screen, button still adds straight to the cart.
+   *  Used where the screen exists only to offer extras: whoever wants none
+   *  should not have to walk through it. */
+  ctaQuickAdd?: boolean;
+  /**
+   * Marca este card com os pontos que a prévia do painel procura.
+   *
+   * Só um card por vez: são vários na mesma tela, e sem isso a prévia
+   * enquadraria o primeiro em vez do produto que está sendo editado. Na loja
+   * ninguém pede, então nada disso chega ao cliente.
+   */
+  marcado?: boolean;
 }) {
+  const { slug: storeSlug } = useStore();
   const Icon = product.icon;
 
   function handleQuickAdd(e: MouseEvent) {
@@ -43,7 +59,7 @@ export function ProductCard({
   }
 
   const media = (
-    <div className="relative aspect-4/3 w-full shrink-0 overflow-hidden">
+    <div data-previa={marcado ? "foto-do-produto" : undefined} className="relative aspect-4/3 w-full shrink-0 overflow-hidden">
       {product.image ? (
         <img
           src={product.image}
@@ -57,7 +73,10 @@ export function ProductCard({
         </div>
       )}
       {product.tag && (
-        <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-tomato px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-mozzarella shadow-[0_6px_16px_-6px_rgba(23,23,23,0.5)]">
+        <span
+          data-previa={marcado ? "etiqueta-do-produto" : undefined}
+          className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-tomato px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide text-[color:var(--on-primary)] shadow-[0_6px_16px_-6px_rgba(23,23,23,0.5)]"
+        >
           {product.tag === "Mais pedida" && <Flame className="h-3.5 w-3.5" />}
           {product.tag}
         </span>
@@ -65,10 +84,24 @@ export function ProductCard({
     </div>
   );
 
+  /* Nome em uma linha, descrição em duas, com altura reservada mesmo quando o
+     texto é curto. Sem isso, um produto de nome comprido empurrava o preço
+     para baixo e a fileira de cards ficava em degraus — cada card terminando
+     numa altura diferente do vizinho. */
   const info = (
     <div className="flex flex-col p-5 sm:p-6">
-      <h3 className="font-display text-xl font-bold text-charcoal">{product.name}</h3>
-      <p className="mt-1.5 text-base leading-snug text-charcoal/55">{product.desc}</p>
+      <h3
+        data-previa={marcado ? "nome-do-produto" : undefined}
+        className="line-clamp-1 font-display text-xl font-bold text-charcoal"
+      >
+        {product.name}
+      </h3>
+      <p
+        data-previa={marcado ? "descricao-do-produto" : undefined}
+        className="mt-1.5 line-clamp-2 min-h-11 text-base leading-snug text-charcoal/55"
+      >
+        {product.desc}
+      </p>
       {tags && tags.length > 0 && (
         <div className="mt-2.5 flex flex-wrap gap-1.5">
           {tags.map((tag) => (
@@ -90,46 +123,95 @@ export function ProductCard({
         <button
           type="button"
           onClick={handleToggleFavorite}
-          aria-label={favorited ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+          aria-label={
+            favorited ? "Remover dos favoritos" : "Adicionar aos favoritos"
+          }
           aria-pressed={favorited}
           className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-mozzarella/90 text-charcoal/50 shadow-[0_6px_16px_-6px_rgba(23,23,23,0.4)] transition-colors hover:text-tomato"
         >
-          <Heart className={cn("h-4 w-4", favorited && "fill-tomato text-tomato")} />
+          <Heart
+            className={cn("h-4 w-4", favorited && "fill-tomato text-tomato")}
+          />
         </button>
       )}
       {linkToCustomize && onSelect ? (
-        <button type="button" onClick={onSelect} className="flex flex-col text-left">
+        <button
+          type="button"
+          onClick={onSelect}
+          className="flex flex-col text-left"
+        >
           {media}
           {info}
         </button>
       ) : linkToCustomize ? (
         <Link
-          to="/pizzaria-2/produto/$slug"
-          params={{ slug: product.slug }}
+          to="/$storeSlug/produto/$slug"
+          params={{ storeSlug, slug: product.slug }}
+          search={{}}
           className="flex flex-col text-left"
         >
           {media}
           {info}
         </Link>
       ) : (
-        <button type="button" onClick={handleQuickAdd} className="flex flex-col text-left">
+        <button
+          type="button"
+          onClick={handleQuickAdd}
+          className="flex flex-col text-left"
+        >
           {media}
           {info}
         </button>
       )}
 
-      <div className="flex items-center justify-between gap-3 p-5 pt-0 sm:p-6 sm:pt-0">
-        <PriceTag value={product.price} className="whitespace-nowrap text-xl sm:text-2xl" />
-        {linkToCustomize && onSelect ? (
+      <div
+        data-previa={marcado ? "preco-do-produto" : undefined}
+        className="flex items-center justify-between gap-3 p-5 pt-0 sm:p-6 sm:pt-0"
+      >
+        <PriceTag
+          value={product.price}
+          className="whitespace-nowrap text-xl sm:text-2xl"
+        />
+        {/*
+          ESGOTADO SUBSTITUI O BOTÃO, não o desabilita por cima.
+
+          Um botão cinza que ainda parece botão convida ao clique e frustra.
+          A etiqueta diz o estado e não promete nada.
+
+          Isto é conveniência: quem impede de verdade é `addLine`, que recusa
+          o slug esgotado venha de onde vier — e, no fim, a reserva síncrona.
+        */}
+        {product.esgotado ? (
+          <span className="inline-flex shrink-0 items-center rounded-full bg-neutral-200 px-4.5 py-3 text-sm font-semibold text-neutral-600">
+            Indisponível
+          </span>
+        ) : ctaQuickAdd ? (
+          <button
+            type="button"
+            onClick={handleQuickAdd}
+            className={ctaClassName}
+          >
+            <Plus className="h-4.5 w-4.5" /> Adicionar
+          </button>
+        ) : linkToCustomize && onSelect ? (
           <button type="button" onClick={onSelect} className={ctaClassName}>
             <Plus className="h-4.5 w-4.5" /> Adicionar
           </button>
         ) : linkToCustomize ? (
-          <Link to="/pizzaria-2/produto/$slug" params={{ slug: product.slug }} className={ctaClassName}>
+          <Link
+            to="/$storeSlug/produto/$slug"
+            params={{ storeSlug, slug: product.slug }}
+            search={{}}
+            className={ctaClassName}
+          >
             <Plus className="h-4.5 w-4.5" /> Adicionar
           </Link>
         ) : (
-          <button type="button" onClick={handleQuickAdd} className={ctaClassName}>
+          <button
+            type="button"
+            onClick={handleQuickAdd}
+            className={ctaClassName}
+          >
             <Plus className="h-4.5 w-4.5" /> Adicionar
           </button>
         )}

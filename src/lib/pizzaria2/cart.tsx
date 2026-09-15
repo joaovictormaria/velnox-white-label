@@ -4,10 +4,14 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { AvisoDoCarrinho } from "@/components/site/pizzaria2/AvisoDoCarrinho";
 import type { LucideIcon } from "lucide-react";
+import { useMenu } from "./menu-provider";
+import { useStore } from "./store-provider";
 
 export type CartLineExtra = { id: string; label: string; price: number };
 
@@ -21,6 +25,14 @@ export type CartLine = {
   extras: CartLineExtra[];
   note?: string;
   qty: number;
+  /**
+   * Identifiers the checkout sends to the server, which re-prices every line
+   * from the database — the displayed unitPrice above is never trusted.
+   */
+  productSlug: string;
+  sizeId?: string;
+  optionIds?: string[];
+  secondProductSlug?: string;
 };
 
 type CartContextValue = {
@@ -39,7 +51,6 @@ type CartContextValue = {
 const CartContext = createContext<CartContextValue | null>(null);
 
 const STORAGE_KEY = "velnox:pizzaria2:cart";
-const DELIVERY_FEE = 6;
 
 function readInitialLines(): CartLine[] {
   try {
@@ -52,7 +63,26 @@ function readInitialLines(): CartLine[] {
   }
 }
 
+/**
+ * Os slugs que não podem ser vendidos agora.
+ *
+ * Puro e exportado para poder ser testado sem React: a barreira é regra, e
+ * regra que só existe dentro de um componente não tem como ser verificada.
+ */
+export function estaEsgotado(
+  productSlug: string,
+  produtos: Array<{ slug: string; esgotado?: boolean }>,
+): boolean {
+  return produtos.some((p) => p.slug === productSlug && p.esgotado === true);
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
+  /*
+   * O cardápio é a fonte do que está esgotado. O CartProvider fica DENTRO do
+   * MenuProvider, então dá para consultar sem passar nada pelos chamadores —
+   * que é o ponto: nenhum dos seis precisa saber desta regra.
+   */
+  const { products: produtosDoCardapio } = useMenu();
   // Starts empty so the very first client render matches the server (which
   // has no access to sessionStorage) — the real cart loads right after, in
   // this effect, instead of in the initializer where it would run during
@@ -80,11 +110,41 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [lines]);
 
-  const addLine = useCallback((line: Omit<CartLine, "id">) => {
+  const [avisando, setAvisando] = useState(false);
+  const relogioDoAviso = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /*
+   * A BARREIRA MORA AQUI, e não nos botões.
+   *
+   * Há seis pontos que adicionam ao carrinho, em seis arquivos, e o sétimo que
+   * alguém criar não vai lembrar desta regra. Desabilitar o botão é
+   * conveniência — o que impede de verdade é a função que todo mundo chama.
+   *
+   * E nem esta é a garantia final: o cardápio é uma fotografia de quando a
+   * página carregou, e o estoque pode acabar enquanto o cliente decide. Quem
+   * garante é a reserva síncrona no checkout, sob lock. Aqui se evita que ele
+   * descubra no fim.
+   */
+  const addLine = useCallback((line: Omit<CartLine, "id">): boolean => {
+    if (estaEsgotado(line.productSlug, produtosDoCardapio)) return false;
+
     setLines((prev) => [
       ...prev,
       { ...line, id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}` },
     ]);
+    /*
+     * Adicionar dois itens seguidos reinicia a contagem em vez de somar dois
+     * avisos: o segundo toque não deve fazer o aviso do primeiro sumir na
+     * cara de quem acabou de tocar.
+     */
+    if (relogioDoAviso.current) clearTimeout(relogioDoAviso.current);
+    setAvisando(true);
+    relogioDoAviso.current = setTimeout(() => setAvisando(false), 1800);
+    return true;
+  }, [produtosDoCardapio]);
+
+  useEffect(() => () => {
+    if (relogioDoAviso.current) clearTimeout(relogioDoAviso.current);
   }, []);
 
   const removeLine = useCallback((id: string) => {
@@ -116,7 +176,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [lines],
   );
   const itemCount = useMemo(() => lines.reduce((sum, l) => sum + l.qty, 0), [lines]);
-  const deliveryFee = lines.length > 0 ? DELIVERY_FEE : 0;
+  /*
+   * A taxa é a da loja, não uma constante.
+   *
+   * Era um valor fixo de R$ 6 herdado de quando a vitrine servia um único
+   * estabelecimento. Num template multi-loja isso mostraria a mesma taxa para
+   * todo mundo, contradizendo o que a própria página diz nas informações de
+   * entrega — e o frete grátis por valor mínimo nunca apareceria.
+   */
+  const { deliveryFee: taxaDaLoja, freeDeliveryMinOrder } = useStore();
+  const freteGratis =
+    freeDeliveryMinOrder !== null && subtotal >= freeDeliveryMinOrder;
+  const deliveryFee = lines.length > 0 && !freteGratis ? taxaDaLoja : 0;
   const total = subtotal + deliveryFee;
 
   const value: CartContextValue = {
@@ -132,7 +203,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     total,
   };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={value}>
+      {children}
+      <AvisoDoCarrinho visivel={avisando} />
+    </CartContext.Provider>
+  );
 }
 
 export function useCart() {

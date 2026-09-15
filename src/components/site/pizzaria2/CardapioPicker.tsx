@@ -1,22 +1,22 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Clock, Gift, Search, ShoppingCart } from "lucide-react";
+import { Clock, Search, ShoppingCart } from "lucide-react";
 import { categoryDescriptions } from "./CategorySaboresSection";
-import { ProductCard } from "./ProductCard";
-import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
+import { ProductRow } from "./ProductRow";
 import { useCart } from "@/lib/pizzaria2/cart";
-import { usePizzariaOnboarding, whatsappLink } from "@/lib/pizzaria2/onboarding";
+import { useStore } from "@/lib/pizzaria2/store-provider";
+import { lerContextoDeMesa } from "@/lib/contexto-de-mesa";
 import {
-  categories,
   formatCurrency,
-  productsByCategory,
-  products as allProducts,
+  defaultSize,
+  exigeEscolha,
+  sizePrice,
   type Category,
   type CategorySlug,
   type Product,
 } from "@/lib/pizzaria2/menu";
+import { useMenu } from "@/lib/pizzaria2/menu-provider";
 import { cn } from "@/lib/utils";
-import ingredientsPhoto from "@/assets/fotos de pizza/mussarela.jpg";
 
 function productTags(product: Product, category?: Category): string[] {
   const tags: string[] = [];
@@ -42,10 +42,17 @@ export function CardapioPicker({
   onSelectPizza: (slug: string) => void;
 }) {
   const { addLine, itemCount, total } = useCart();
-  const { businessPhone, businessName } = usePizzariaOnboarding();
-  const [activeSlug, setActiveSlug] = useState<CategorySlug>("tradicionais");
+  const { slug: storeSlug } = useStore();
+  const { categories, products: allProducts, productsByCategory, categoryBySlug } = useMenu();
+  const [activeSlug, setActiveSlug] = useState<CategorySlug>(
+    categories[0]?.slug ?? "tradicionais",
+  );
   const [query, setQuery] = useState("");
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  /*
+   * Mesa DESTA loja, e ainda válida. Antes era a chave global crua, que fazia
+   * a mesa de um restaurante viajar para o carrinho de outro.
+   */
+  const [tableId] = useState(() => lerContextoDeMesa(storeSlug)?.tableId ?? null);
 
   const activeCategory = categories.find((c) => c.slug === activeSlug);
 
@@ -53,20 +60,13 @@ export function CardapioPicker({
     const term = query.trim().toLowerCase();
     if (term) {
       return allProducts.filter(
-        (p) => p.name.toLowerCase().includes(term) || p.desc.toLowerCase().includes(term),
+        (p) =>
+          p.name.toLowerCase().includes(term) ||
+          p.desc.toLowerCase().includes(term),
       );
     }
     return productsByCategory(activeSlug);
-  }, [query, activeSlug]);
-
-  function toggleFavorite(slug: string) {
-    setFavorites((prev) => {
-      const next = new Set(prev);
-      if (next.has(slug)) next.delete(slug);
-      else next.add(slug);
-      return next;
-    });
-  }
+  }, [query, activeSlug, allProducts, productsByCategory]);
 
   return (
     <div className="relative">
@@ -78,7 +78,7 @@ export function CardapioPicker({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar no cardápio..."
-            className="w-full rounded-full border border-charcoal/10 bg-cream/60 py-2.5 pl-10 pr-4 text-sm text-charcoal placeholder:text-charcoal/40 focus:border-tomato focus:outline-none"
+            className="w-full rounded-full border border-charcoal/10 bg-cream/60 py-2.5 pl-10 pr-4 text-base md:text-sm text-charcoal placeholder:text-charcoal/40 focus:border-tomato focus:outline-none"
           />
         </div>
         <div className="flex items-center gap-2 rounded-full border border-charcoal/10 px-3.5 py-2 text-xs font-semibold text-charcoal/70">
@@ -89,8 +89,10 @@ export function CardapioPicker({
           </span>
         </div>
         <Link
-          to="/pizzaria-2/carrinho"
-          className="flex items-center gap-2 rounded-full bg-tomato px-4 py-2 text-sm font-bold text-mozzarella transition-colors hover:bg-tomato/90"
+          to="/$storeSlug/carrinho"
+          params={{ storeSlug }}
+          search={{ pagar: itemCount > 0 ? true : undefined, tableId: tableId ?? undefined } as any}
+          className="flex items-center gap-2 rounded-full bg-tomato px-4 py-2 text-sm font-bold text-[color:var(--on-primary)] transition-colors hover:bg-tomato/90 active:scale-95"
         >
           <span className="relative">
             <ShoppingCart className="h-4 w-4" />
@@ -102,13 +104,30 @@ export function CardapioPicker({
           </span>
           {formatCurrency(total)}
         </Link>
+        {/*
+          Em tela larga o "Finalizar compras" mora aqui, ao lado do carrinho,
+          onde o olho já está. O botão flutuante do canto existe para o celular,
+          onde essa barra some da vista assim que a pessoa começa a rolar.
+        */}
+        {itemCount > 0 && (
+          <Link
+            to="/$storeSlug/carrinho"
+            params={{ storeSlug }}
+            search={{ pagar: true, tableId: tableId ?? undefined } as any}
+            className="hidden items-center gap-2 rounded-full bg-charcoal px-5 py-2 text-sm font-bold text-mozzarella transition-colors hover:bg-charcoal/90 active:scale-95 lg:flex"
+          >
+            Finalizar compras
+          </Link>
+        )}
       </div>
 
       {/* Heading + promo banner */}
       <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-3">
           <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-tomato/10 text-tomato">
-            {activeCategory?.icon && <activeCategory.icon className="h-5 w-5" />}
+            {activeCategory?.icon && (
+              <activeCategory.icon className="h-5 w-5" />
+            )}
           </span>
           <div>
             <h2 className="font-display text-2xl font-extrabold text-charcoal sm:text-3xl">
@@ -121,23 +140,6 @@ export function CardapioPicker({
             </p>
           </div>
         </div>
-
-        <div className="flex items-center gap-4 rounded-2xl border border-charcoal/8 bg-tomato/5 p-4 lg:max-w-sm">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-tomato/10 text-tomato">
-            <Gift className="h-5 w-5" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-bold text-tomato">Ingredientes selecionados</p>
-            <p className="mt-0.5 text-xs leading-relaxed text-charcoal/60">
-              Massa fresca, molho artesanal e muito mais sabor para sua pizza perfeita.
-            </p>
-          </div>
-          <img
-            src={ingredientsPhoto}
-            alt=""
-            className="hidden h-16 w-16 shrink-0 rounded-xl object-cover sm:block"
-          />
-        </div>
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr]">
@@ -147,7 +149,9 @@ export function CardapioPicker({
             <p className="px-1 text-xs font-bold uppercase tracking-wide text-tomato">
               Categorias
             </p>
-            <nav className="mt-3 flex flex-col gap-1">
+            {/* O -mx-4/px-4 deixa a fila encostar nas bordas da tela ao rolar,
+                em vez de parecer cortada dentro de uma caixa. */}
+            <nav className="-mx-4 mt-3 flex gap-1 overflow-x-auto px-4 [scrollbar-width:none] lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0 [&::-webkit-scrollbar]:hidden">
               {categories.map((cat) => {
                 const active = cat.slug === activeSlug && !query.trim();
                 return (
@@ -159,8 +163,10 @@ export function CardapioPicker({
                       setActiveSlug(cat.slug);
                     }}
                     className={cn(
-                      "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors",
-                      active ? "bg-tomato/10 text-tomato" : "text-charcoal/70 hover:bg-charcoal/5",
+                      "flex shrink-0 items-center gap-2.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors lg:shrink",
+                      active
+                        ? "bg-tomato/10 text-tomato"
+                        : "text-charcoal/70 hover:bg-charcoal/5",
                     )}
                   >
                     {cat.icon && <cat.icon className="h-4 w-4 shrink-0" />}
@@ -171,66 +177,29 @@ export function CardapioPicker({
             </nav>
           </div>
 
-          <a
-            href={whatsappLink(
-              businessPhone,
-              `Olá! Vi que ${businessName} tem uma oferta pro primeiro pedido, quero aproveitar 🍕`,
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-2xl border border-tomato/20 bg-tomato/5 p-4 transition-colors hover:bg-tomato/10"
-          >
-            <div className="flex items-center gap-2.5">
-              <Gift className="h-4 w-4 shrink-0 text-tomato" />
-              <div>
-                <p className="text-sm font-bold text-tomato">Ganhe 10% OFF</p>
-                <p className="text-xs text-charcoal/55">No seu primeiro pedido!</p>
-              </div>
-            </div>
-            <span className="mt-3 block rounded-full border border-tomato/30 py-2 text-center text-xs font-bold text-tomato">
-              Quero aproveitar
-            </span>
-          </a>
-
-          <a
-            href={whatsappLink(businessPhone, `Olá! Preciso de uma ajuda com o pedido 🍕`)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center gap-2.5 rounded-2xl border border-charcoal/8 bg-mozzarella p-4 transition-colors hover:border-tomato/25"
-          >
-            <WhatsAppIcon className="h-5 w-5 shrink-0 text-olive" />
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-semibold text-charcoal">Precisa de ajuda?</span>
-              <span className="block text-xs text-charcoal/55">Fale com a gente no WhatsApp</span>
-            </span>
-            <span className="text-tomato transition-transform group-hover:translate-x-0.5">→</span>
-          </a>
         </aside>
 
         {/* Product grid */}
         <div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             {results.map((product) => {
-              const productCategory = categories.find((c) => c.slug === product.categorySlug);
-              const isPizza = productCategory?.kind === "pizza";
               return (
-                <ProductCard
+                <ProductRow
                   key={product.slug}
                   product={product}
-                  linkToCustomize={isPizza}
-                  onSelect={isPizza ? () => onSelectPizza(product.slug) : undefined}
-                  tags={productTags(product, productCategory)}
-                  favorited={favorites.has(product.slug)}
-                  onToggleFavorite={() => toggleFavorite(product.slug)}
+                  price={sizePrice(product)}
+                  exigeEscolha={exigeEscolha(product, categoryBySlug(product.categorySlug))}
                   onQuickAdd={() =>
                     addLine({
                       name: product.name,
-                      sizeLabel: isPizza ? "Média" : undefined,
+                      sizeLabel: defaultSize(product)?.label,
                       image: product.image,
                       icon: product.icon,
-                      unitPrice: product.price,
+                      unitPrice: sizePrice(product),
                       extras: [],
                       qty: 1,
+                      productSlug: product.slug,
+                      sizeId: defaultSize(product)?.id,
                     })
                   }
                 />
@@ -246,11 +215,17 @@ export function CardapioPicker({
         </div>
       </div>
 
-      {/* Floating cart button */}
+      {/*
+        Com item no carrinho o botão deixa de ser "ver" e passa a ser o
+        próximo passo: leva direto ao pagamento, sem a parada de conferência.
+        Quem quiser conferir fecha o pagamento e o carrinho está atrás dele.
+      */}
       {itemCount > 0 && (
         <Link
-          to="/pizzaria-2/carrinho"
-          className="fixed bottom-6 right-6 z-20 flex items-center gap-2 rounded-full bg-tomato px-5 py-3.5 text-sm font-bold text-mozzarella shadow-[0_20px_40px_-16px_rgba(233,75,44,0.6)] transition-transform hover:-translate-y-0.5"
+          to="/$storeSlug/carrinho"
+          params={{ storeSlug }}
+          search={{ pagar: true }}
+          className="fixed bottom-6 right-6 z-20 flex items-center gap-2 rounded-full bg-tomato px-5 py-3.5 lg:hidden text-sm font-bold text-[color:var(--on-primary)] shadow-[0_20px_40px_-16px_rgba(233,75,44,0.6)] transition-transform hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
         >
           <span className="relative">
             <ShoppingCart className="h-5 w-5" />
@@ -258,7 +233,7 @@ export function CardapioPicker({
               {itemCount}
             </span>
           </span>
-          Ver pedido
+          Finalizar compras
         </Link>
       )}
     </div>

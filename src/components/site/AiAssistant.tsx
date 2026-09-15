@@ -45,6 +45,15 @@ const restaurants = [
   { label: "Outro", article: "do", icon: MoreHorizontal },
 ];
 
+/** Segmentos com vitrine mockada pronta. Os demais caem na análise por IA. */
+const DEMONSTRACAO_POR_SEGMENTO: Record<string, string> = {
+  Hamburgueria: "hamburgueria",
+  Pizzaria: "pizzaria",
+  Restaurante: "restaurante",
+  Cafeteria: "cafeteria",
+  "Açaí": "acaiteria",
+};
+
 export function AiAssistant() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState("Hamburgueria");
@@ -78,8 +87,19 @@ export function AiAssistant() {
       }),
     );
 
-    if (selected === "Pizzaria") {
-      navigate({ to: "/pizzaria-2", viewTransition: { types: ["slide"] } });
+    /*
+     * Quando existe uma vitrine de demonstração para o segmento escolhido, é
+     * para lá que a pessoa vai — ver o próprio tipo de negócio montado vende
+     * mais que a análise. Antes só a pizzaria tinha destino; agora são sete, e
+     * os segmentos sem demonstração seguem para a análise como antes.
+     */
+    const demonstracao = DEMONSTRACAO_POR_SEGMENTO[selected];
+    if (demonstracao) {
+      navigate({
+        to: "/$storeSlug",
+        params: { storeSlug: demonstracao },
+        viewTransition: { types: ["slide"] },
+      });
       return;
     }
 

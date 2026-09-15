@@ -10,17 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StoreSlugRouteRouteImport } from './routes/$storeSlug/route'
 import { Route as AnaliseRouteImport } from './routes/analise'
 import { Route as CriarSiteRouteImport } from './routes/criar-site'
-import { Route as Pizzaria2RouteRouteImport } from './routes/pizzaria-2/route'
 import { Route as PreviewRouteImport } from './routes/preview'
-import { Route as Pizzaria2IndexRouteImport } from './routes/pizzaria-2/index'
-import { Route as Pizzaria2CarrinhoRouteImport } from './routes/pizzaria-2/carrinho'
-import { Route as Pizzaria2ProdutoSlugRouteImport } from './routes/pizzaria-2/produto/$slug'
+import { Route as StoreSlugIndexRouteImport } from './routes/$storeSlug/index'
+import { Route as StoreSlugCarrinhoRouteImport } from './routes/$storeSlug/carrinho'
+import { Route as StoreSlugProdutoSlugRouteImport } from './routes/$storeSlug/produto/$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoreSlugRouteRoute = StoreSlugRouteRouteImport.update({
+  id: '/$storeSlug',
+  path: '/$storeSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnaliseRoute = AnaliseRouteImport.update({
@@ -33,97 +38,92 @@ const CriarSiteRoute = CriarSiteRouteImport.update({
   path: '/criar-site',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Pizzaria2RouteRoute = Pizzaria2RouteRouteImport.update({
-  id: '/pizzaria-2',
-  path: '/pizzaria-2',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PreviewRoute = PreviewRouteImport.update({
   id: '/preview',
   path: '/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Pizzaria2IndexRoute = Pizzaria2IndexRouteImport.update({
+const StoreSlugIndexRoute = StoreSlugIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => Pizzaria2RouteRoute,
+  getParentRoute: () => StoreSlugRouteRoute,
 } as any)
-const Pizzaria2CarrinhoRoute = Pizzaria2CarrinhoRouteImport.update({
+const StoreSlugCarrinhoRoute = StoreSlugCarrinhoRouteImport.update({
   id: '/carrinho',
   path: '/carrinho',
-  getParentRoute: () => Pizzaria2RouteRoute,
+  getParentRoute: () => StoreSlugRouteRoute,
 } as any)
-const Pizzaria2ProdutoSlugRoute = Pizzaria2ProdutoSlugRouteImport.update({
+const StoreSlugProdutoSlugRoute = StoreSlugProdutoSlugRouteImport.update({
   id: '/produto/$slug',
   path: '/produto/$slug',
-  getParentRoute: () => Pizzaria2RouteRoute,
+  getParentRoute: () => StoreSlugRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/pizzaria-2': typeof Pizzaria2RouteRouteWithChildren
+  '/$storeSlug': typeof StoreSlugRouteRouteWithChildren
   '/analise': typeof AnaliseRoute
   '/criar-site': typeof CriarSiteRoute
   '/preview': typeof PreviewRoute
-  '/pizzaria-2/carrinho': typeof Pizzaria2CarrinhoRoute
-  '/pizzaria-2/': typeof Pizzaria2IndexRoute
-  '/pizzaria-2/produto/$slug': typeof Pizzaria2ProdutoSlugRoute
+  '/$storeSlug/carrinho': typeof StoreSlugCarrinhoRoute
+  '/$storeSlug/': typeof StoreSlugIndexRoute
+  '/$storeSlug/produto/$slug': typeof StoreSlugProdutoSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analise': typeof AnaliseRoute
   '/criar-site': typeof CriarSiteRoute
   '/preview': typeof PreviewRoute
-  '/pizzaria-2/carrinho': typeof Pizzaria2CarrinhoRoute
-  '/pizzaria-2': typeof Pizzaria2IndexRoute
-  '/pizzaria-2/produto/$slug': typeof Pizzaria2ProdutoSlugRoute
+  '/$storeSlug/carrinho': typeof StoreSlugCarrinhoRoute
+  '/$storeSlug': typeof StoreSlugIndexRoute
+  '/$storeSlug/produto/$slug': typeof StoreSlugProdutoSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/pizzaria-2': typeof Pizzaria2RouteRouteWithChildren
+  '/$storeSlug': typeof StoreSlugRouteRouteWithChildren
   '/analise': typeof AnaliseRoute
   '/criar-site': typeof CriarSiteRoute
   '/preview': typeof PreviewRoute
-  '/pizzaria-2/carrinho': typeof Pizzaria2CarrinhoRoute
-  '/pizzaria-2/': typeof Pizzaria2IndexRoute
-  '/pizzaria-2/produto/$slug': typeof Pizzaria2ProdutoSlugRoute
+  '/$storeSlug/carrinho': typeof StoreSlugCarrinhoRoute
+  '/$storeSlug/': typeof StoreSlugIndexRoute
+  '/$storeSlug/produto/$slug': typeof StoreSlugProdutoSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/pizzaria-2'
+    | '/$storeSlug'
     | '/analise'
     | '/criar-site'
     | '/preview'
-    | '/pizzaria-2/carrinho'
-    | '/pizzaria-2/'
-    | '/pizzaria-2/produto/$slug'
+    | '/$storeSlug/carrinho'
+    | '/$storeSlug/'
+    | '/$storeSlug/produto/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/analise'
     | '/criar-site'
     | '/preview'
-    | '/pizzaria-2/carrinho'
-    | '/pizzaria-2'
-    | '/pizzaria-2/produto/$slug'
+    | '/$storeSlug/carrinho'
+    | '/$storeSlug'
+    | '/$storeSlug/produto/$slug'
   id:
     | '__root__'
     | '/'
-    | '/pizzaria-2'
+    | '/$storeSlug'
     | '/analise'
     | '/criar-site'
     | '/preview'
-    | '/pizzaria-2/carrinho'
-    | '/pizzaria-2/'
-    | '/pizzaria-2/produto/$slug'
+    | '/$storeSlug/carrinho'
+    | '/$storeSlug/'
+    | '/$storeSlug/produto/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  Pizzaria2RouteRoute: typeof Pizzaria2RouteRouteWithChildren
+  StoreSlugRouteRoute: typeof StoreSlugRouteRouteWithChildren
   AnaliseRoute: typeof AnaliseRoute
   CriarSiteRoute: typeof CriarSiteRoute
   PreviewRoute: typeof PreviewRoute
@@ -136,6 +136,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$storeSlug': {
+      id: '/$storeSlug'
+      path: '/$storeSlug'
+      fullPath: '/$storeSlug'
+      preLoaderRoute: typeof StoreSlugRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analise': {
@@ -152,13 +159,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CriarSiteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pizzaria-2': {
-      id: '/pizzaria-2'
-      path: '/pizzaria-2'
-      fullPath: '/pizzaria-2'
-      preLoaderRoute: typeof Pizzaria2RouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/preview': {
       id: '/preview'
       path: '/preview'
@@ -166,49 +166,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pizzaria-2/': {
-      id: '/pizzaria-2/'
+    '/$storeSlug/': {
+      id: '/$storeSlug/'
       path: '/'
-      fullPath: '/pizzaria-2/'
-      preLoaderRoute: typeof Pizzaria2IndexRouteImport
-      parentRoute: typeof Pizzaria2RouteRoute
+      fullPath: '/$storeSlug/'
+      preLoaderRoute: typeof StoreSlugIndexRouteImport
+      parentRoute: typeof StoreSlugRouteRoute
     }
-    '/pizzaria-2/carrinho': {
-      id: '/pizzaria-2/carrinho'
+    '/$storeSlug/carrinho': {
+      id: '/$storeSlug/carrinho'
       path: '/carrinho'
-      fullPath: '/pizzaria-2/carrinho'
-      preLoaderRoute: typeof Pizzaria2CarrinhoRouteImport
-      parentRoute: typeof Pizzaria2RouteRoute
+      fullPath: '/$storeSlug/carrinho'
+      preLoaderRoute: typeof StoreSlugCarrinhoRouteImport
+      parentRoute: typeof StoreSlugRouteRoute
     }
-    '/pizzaria-2/produto/$slug': {
-      id: '/pizzaria-2/produto/$slug'
+    '/$storeSlug/produto/$slug': {
+      id: '/$storeSlug/produto/$slug'
       path: '/produto/$slug'
-      fullPath: '/pizzaria-2/produto/$slug'
-      preLoaderRoute: typeof Pizzaria2ProdutoSlugRouteImport
-      parentRoute: typeof Pizzaria2RouteRoute
+      fullPath: '/$storeSlug/produto/$slug'
+      preLoaderRoute: typeof StoreSlugProdutoSlugRouteImport
+      parentRoute: typeof StoreSlugRouteRoute
     }
   }
 }
 
-interface Pizzaria2RouteRouteChildren {
-  Pizzaria2CarrinhoRoute: typeof Pizzaria2CarrinhoRoute
-  Pizzaria2IndexRoute: typeof Pizzaria2IndexRoute
-  Pizzaria2ProdutoSlugRoute: typeof Pizzaria2ProdutoSlugRoute
+interface StoreSlugRouteRouteChildren {
+  StoreSlugCarrinhoRoute: typeof StoreSlugCarrinhoRoute
+  StoreSlugIndexRoute: typeof StoreSlugIndexRoute
+  StoreSlugProdutoSlugRoute: typeof StoreSlugProdutoSlugRoute
 }
 
-const Pizzaria2RouteRouteChildren: Pizzaria2RouteRouteChildren = {
-  Pizzaria2CarrinhoRoute: Pizzaria2CarrinhoRoute,
-  Pizzaria2IndexRoute: Pizzaria2IndexRoute,
-  Pizzaria2ProdutoSlugRoute: Pizzaria2ProdutoSlugRoute,
+const StoreSlugRouteRouteChildren: StoreSlugRouteRouteChildren = {
+  StoreSlugCarrinhoRoute: StoreSlugCarrinhoRoute,
+  StoreSlugIndexRoute: StoreSlugIndexRoute,
+  StoreSlugProdutoSlugRoute: StoreSlugProdutoSlugRoute,
 }
 
-const Pizzaria2RouteRouteWithChildren = Pizzaria2RouteRoute._addFileChildren(
-  Pizzaria2RouteRouteChildren,
+const StoreSlugRouteRouteWithChildren = StoreSlugRouteRoute._addFileChildren(
+  StoreSlugRouteRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  Pizzaria2RouteRoute: Pizzaria2RouteRouteWithChildren,
+  StoreSlugRouteRoute: StoreSlugRouteRouteWithChildren,
   AnaliseRoute: AnaliseRoute,
   CriarSiteRoute: CriarSiteRoute,
   PreviewRoute: PreviewRoute,

@@ -1,12 +1,15 @@
 import { useNavigate, useLocation } from "@tanstack/react-router";
+import { useStore } from "./store-provider";
 import type { MouseEvent } from "react";
 
-const HOME_PATH = "/pizzaria-2";
+const HOME_PATH = "/$storeSlug";
 const CARDAPIO_SECTION_ID = "cardapio";
 
-function scrollToCardapio() {
+function scrollToSection(id: string) {
   const scroll = () =>
-    document.getElementById(CARDAPIO_SECTION_ID)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document
+      .getElementById(id)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   scroll();
   // The hero's photo carousel and other images are often still loading right
   // after navigating Home, which shifts everything below the fold — nudge
@@ -21,20 +24,35 @@ function scrollToCardapio() {
  * comprando" — needs the same behavior: scroll there directly if already on
  * Home, or navigate Home first and scroll once it has mounted.
  */
-export function useGoToCardapio() {
+export function useGoToSection() {
   const navigate = useNavigate();
   const pathname = useLocation({ select: (location) => location.pathname });
-  const isHome = pathname === HOME_PATH || pathname === `${HOME_PATH}/`;
+  const { slug: storeSlug } = useStore();
+  const home = `/${storeSlug}`;
+  const isHome = pathname === home || pathname === `${home}/`;
 
-  return function goToCardapio(e?: Pick<MouseEvent, "preventDefault">) {
+  return function goToSection(
+    id: string,
+    e?: Pick<MouseEvent, "preventDefault">,
+  ) {
     e?.preventDefault?.();
     if (isHome) {
-      scrollToCardapio();
+      scrollToSection(id);
       return;
     }
-    navigate({ to: HOME_PATH }).then(() => {
+    navigate({ to: HOME_PATH, params: { storeSlug } }).then(() => {
       // Wait for the Home route to mount and paint before measuring its layout.
-      requestAnimationFrame(() => requestAnimationFrame(scrollToCardapio));
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => scrollToSection(id)),
+      );
     });
   };
+}
+
+/** Every section link behaves the same way; the cardápio is just the one with
+ *  enough callers to deserve its own name. */
+export function useGoToCardapio() {
+  const goToSection = useGoToSection();
+  return (e?: Pick<MouseEvent, "preventDefault">) =>
+    goToSection(CARDAPIO_SECTION_ID, e);
 }
