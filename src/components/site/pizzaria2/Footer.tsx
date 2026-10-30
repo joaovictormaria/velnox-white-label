@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Mail, MapPin, Pizza } from "lucide-react";
+import { ArrowRight, Mail, MapPin, Pizza } from "lucide-react";
 import { WhatsAppIcon } from "@/components/site/WhatsAppIcon";
 import { useGoToCardapio } from "@/lib/pizzaria2/go-to-cardapio";
 import { useStore } from "@/lib/pizzaria2/store-provider";
@@ -176,10 +176,6 @@ export function Footer() {
             © {new Date().getFullYear()} {storeName} · Todos os direitos reservados
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-charcoal/45">
-            <a href="https://www.velnoxia.com.br" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-tomato">
-              Velnox.IA
-            </a>
-            <span className="text-charcoal/20">·</span>
             <a href="/privacidade" className="transition-colors hover:text-tomato">
               Política de Privacidade
             </a>
@@ -188,6 +184,21 @@ export function Footer() {
               Termos de Uso
             </a>
           </div>
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <a
+            href="https://portifolio.velnoxia.com.br"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-charcoal/10 py-2 pl-4 pr-2 text-xs text-charcoal/55 transition-colors hover:border-tomato hover:bg-white"
+          >
+            <span className="whitespace-nowrap">Site desenvolvido por</span>
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-tomato px-3 py-1.5 font-bold text-white">
+              João Victor Maria
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </a>
         </div>
       </div>
     </footer>

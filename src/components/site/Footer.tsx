@@ -1,4 +1,4 @@
-import { MessageCircle } from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/site/Reveal";
 
@@ -53,6 +53,20 @@ export function Footer() {
         <p className="text-xs text-muted-foreground">
           © {new Date().getFullYear()} velnox.ia — Todos os direitos reservados.
         </p>
+        <div className="mt-6 flex justify-center">
+          <a
+            href="https://portifolio.velnoxia.com.br"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-border py-2 pl-4 pr-2 text-xs text-muted-foreground transition-colors hover:border-primary"
+          >
+            <span className="whitespace-nowrap">Site desenvolvido por</span>
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-primary px-3 py-1.5 font-bold text-primary-foreground">
+              João Victor Maria
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </a>
+        </div>
       </div>
     </footer>
   );
